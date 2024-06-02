@@ -181,10 +181,12 @@ body {
 .resource-container {
   display: flex;
   justify-content: space-between;
+  padding: 20px;
 }
 
 .left-section {
   flex-basis: 30%;
+  padding: 20px
 }
 
 .left-section h3 {
@@ -201,6 +203,7 @@ body {
 
 .right-section {
   flex-basis: 30%;
+  padding: 20px;
 }
 
 .right-section h3 {
@@ -269,3 +272,33 @@ body {
   color: #ffffff; 
 }
 
+.comment-card {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.comment-card p {
+  margin: 5px 0;
+}
+
+.rating-card {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+.rating-card p {
+  margin: 5px 0;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

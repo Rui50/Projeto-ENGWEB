@@ -32,19 +32,19 @@ module.exports.insert = res => {
 
 module.exports.insertComment = (id, comment) => {
     return Resource
-        .update({ _id: id }, { $push: { comments: comment } })
+        .updateOne({ _id: id }, { $push: { comments: comment } })
         .exec()
 }
 
 module.exports.insertRanking = (id, ranking) => {
     return Resource
-        .update({ _id: id }, { $push: { rankings: ranking } })
+        .updateOne({ _id: id }, { $push: { rankings: ranking } })
         .exec()
 }
 
 module.exports.updateRanking = (id, ranking) => {
     return Resource
-        .update({ _id: id, 'rankings.user': ranking.user }, { $set: { 'rankings.$.stars': ranking.stars } })
+        .updateOne({ _id: id, 'rankings.user': ranking.user }, { $set: { 'rankings.$.stars': ranking.stars } })
         .exec()
 }
 
@@ -57,5 +57,17 @@ module.exports.update = (id, res) => {
 module.exports.remove = id => {
     return Resource
         .deleteOne({ _id: id })
+        .exec()
+}
+
+module.exports.getComments = id => {
+    return Resource
+        .findOne({ _id: id }, { comments: 1 })
+        .exec()
+}
+
+module.exports.getRankings = id => {
+    return Resource
+        .findOne({ _id: id }, { rankings: 1 })
         .exec()
 }

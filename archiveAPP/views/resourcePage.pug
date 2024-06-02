@@ -10,11 +10,13 @@ block content
     .resource-container
         .left-section
             h3.text-center Latest Ratings
-            // Displaying only the latest 5 ratings
-            each rating in resource.rankings.slice(0, 5)
-                .rating
-                    p.rating-value #{rating.stars} ⭐
-                    p.rating-meta by #{rating.user} on #{rating.date}
+            .ratings-container
+                // Wrap each set of cards in a container
+                .cards-container
+                    each rating in resource.rankings.slice(0, 5)
+                        .rating-card
+                            p.rating-value #{rating.stars} ⭐
+                            p.rating-meta by #{rating.user} on #{rating.date}
 
         .middle-section
             h2.text-center Resource Info
@@ -49,7 +51,10 @@ block content
 
         .right-section
             h3.text-center Latest Comments
-            each comment in resource.comments.slice(0, 5)
-                .comment
-                    p.comment-text #{comment.content}
-                    p.comment-meta by #{comment.user} on #{comment.postDate}
+                .comments-container
+                    // Wrap each set of cards in a container
+                    .cards-container
+                        each comment in resource.comments.slice(0, 5)
+                            .comment-card
+                                p.comment-text #{comment.content}
+                                p.comment-meta by #{comment.user} on #{comment.postDate}

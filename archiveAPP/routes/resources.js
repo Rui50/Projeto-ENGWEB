@@ -18,30 +18,6 @@ router.get('/', function(req, res, next) {
     })
 });
 
-router.get('/:id', function(req, res, next) {
-    var date = new Date().toISOString().substring(0,19);
-    var id = req.params.id;
-    var resource;
-
-    axios.get(`http://localhost:5001/resources/${id}`)
-        .then(resourceResponse => {
-            resource = resourceResponse.data;
-            
-            // Fetch other resources by the same author
-            var author = resource.author;
-            return axios.get(`http://localhost:5001/resources?author=${author}`);
-        })
-        .then(authorResourcesResponse => {
-            var authorResources = authorResourcesResponse.data;
-            
-            // Render the page with the resource and other resources by the same author
-            res.render('resourcePage', { resource: resource, authorResources: authorResources, resourceList: authorResources, d: date });
-        })
-        .catch(error => {
-            res.render('error', { error: error });
-        });
-});
-
 router.get('/add', function(req, res, next) {
   var data = new Date().toISOString().substring(0,19)
   res.render('addresource', {/*u: req.user,*/data: data});
@@ -88,15 +64,18 @@ router.post('/add', upload.single('file'), function (req, res, next) {
         });
 });
 
+//<form id="rateForm" action="/resources/rate/${resource}" method="post"></form>
+//<form id="commentForm" action="/resources/comment/${resource}" method="post"></form>
 
-router.post('comments/:id', function(req, res, next) {
+router.post('/comment/:id', function(req, res, next) {
+    console.log('Received comment data:', req.body)
     var id = req.params.id;
     var comment = {
         content: req.body.content,
         user: req.body.user,
     };
 
-    axios.post(`http://localhost:5001/resources/${id}/comments`, comment)
+    axios.post(`http://localhost:5001/resources/comments/${id}`, comment)
         .then(response => {
             res.redirect(`/resources/${id}`);
         })
@@ -113,7 +92,7 @@ router.post('/rate/:id', function(req, res, next) {
         user: req.body.user
     };
 
-    axios.post(`http://localhost:5001/resources/${id}/rankings`, ranking)
+    axios.post(`http://localhost:5001/resources/ratings/${id}`, ranking)
         .then(response => {
             res.redirect(`/resources/${id}`);
         })
@@ -122,5 +101,28 @@ router.post('/rate/:id', function(req, res, next) {
             res.render('error', { error: error });
         });
 });
+
+router.get('/:id', function(req, res, next) {
+    var date = new Date().toISOString().substring(0,19);
+    var id = req.params.id;
+    var resource;
+
+    axios.get(`http://localhost:5001/resources/${id}`)
+        .then(resourceResponse => {
+            resource = resourceResponse.data;
+            
+            var author = resource.author;
+            return axios.get(`http://localhost:5001/resources?author=${author}`);
+        })
+        .then(authorResourcesResponse => {
+            var authorResources = authorResourcesResponse.data;
+            
+            res.render('resourcePage', { resource: resource, authorResources: authorResources, resourceList: authorResources, d: date });
+        })
+        .catch(error => {
+            res.render('error', { error: error });
+        });
+});
+
 
 module.exports = router;

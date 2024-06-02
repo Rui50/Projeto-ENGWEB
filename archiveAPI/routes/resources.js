@@ -14,13 +14,6 @@ router.get('/', function(req, res, next) {
         .catch(erro => res.status(500).jsonp(erro))
 });
 
-// GET /resources/:id - Devolve a informação de um recurso
-router.get('/:id', function(req, res, next) {
-    Resources.findById(req.params.id)
-        .then(dados => res.jsonp(dados))
-        .catch(erro => res.status(500).jsonp(erro))
-});
-
 // GET /resources/:author - Devolve a lista de recursos de um autor
 router.get('author/:author', function(req, res, next) {
     Resources.findByAuthor(req.params.author)
@@ -34,6 +27,27 @@ router.get('type/:type', function(req, res, next) {
         .then(dados => res.jsonp(dados))
         .catch(erro => res.status(500).jsonp(erro))
 });
+
+router.get('/comments/:id', function(req, res, next) {
+    Resources.getComments(req.params.id)
+        .then(dados => res.jsonp(dados))
+        .catch(erro => res.status(500).jsonp(erro))
+});
+
+router.get('/ratings/:id', function(req, res, next) {
+    Resources.getRankings(req.params.id)
+        .then(dados => res.jsonp(dados))
+        .catch(erro => res.status(500).jsonp(erro))
+});
+
+// GET /resources/:id - Devolve a informação de um recurso
+router.get('/:id', function(req, res, next) {
+    Resources.findById(req.params.id)
+        .then(dados => res.jsonp(dados))
+        .catch(erro => res.status(500).jsonp(erro))
+});
+
+
 
 /**
  * @api {post}
@@ -63,34 +77,34 @@ router.post('/', function(req, res, next) {
 });
 
 // POST /resources/:id/comments - Insere um comentário num recurso
-router.post('/:id/comments', function(req, res, next) {
+router.post('/comments/:id', function(req, res, next) {
+    console.log('Received request to post comment');
+    console.log('Request parameters:', req.params);
+    console.log('Request body:', req.body);
+
     var id = req.params.id;
     var comment = {
         content: req.body.content,
-        user: req.body.user,
+        user: "teste",//req.body.user,
         postDate: new Date()
     };
 
+    console.log('Comment to be inserted:', comment);
+
     Resources.insertComment(id, comment)
-        .then(dados => res.jsonp(dados))
-        .catch(erro => res.status(500).jsonp(erro))
-});
-
-router.post('/:id/rankings', function(req, res, next) {
-    var id = req.params.id;
-    var ranking = {
-        user: req.body.user,
-        stars: req.body.stars
-    };
-
-    Resources.insertRanking(id, ranking)
-        .then(dados => res.jsonp(dados))
-        .catch(erro => res.status(500).jsonp(erro))
+        .then(dados => {
+            console.log('Comment inserted successfully:', dados);
+            res.jsonp(dados);
+        })
+        .catch(erro => {
+            console.error('Error inserting comment:', erro);
+            res.status(500).jsonp(erro);
+        });
 });
 
 
 // POST /resources/:id/rankings - Insere um ranking num recurso
-router.post('/:id/rankings', function(req, res, next) {
+router.post('/ratings/:id', function(req, res, next) {
     Resources.findById(req.params.id)
         .then(resp => {
             var ranking = {
