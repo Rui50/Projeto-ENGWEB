@@ -1,0 +1,55 @@
+extends layout
+
+block content
+    .modal(id="display")
+    .centered-nav.w3-bar.w3-theme-d5
+        a.w3-bar-item.w3-button(href="/resources") Recursos
+        a.w3-bar-item.w3-button(href="/profile") Profile
+        a.w3-bar-item.w3-button(href="/news") News
+
+    .resource-container
+        .left-section
+            h3.text-center Latest Ratings
+            // Displaying only the latest 5 ratings
+            each rating in resource.rankings.slice(0, 5)
+                .rating
+                    p.rating-value #{rating.stars} ⭐
+                    p.rating-meta by #{rating.user} on #{rating.date}
+
+        .middle-section
+            h2.text-center Resource Info
+            .resource-info-container
+                .resource-details
+                    p.resource-title #{resource.title}
+                    p.subtitle #{resource.subtitle || 'Indefinido'}
+                    p Tipo: #{resource.type}
+                    p Autor: #{resource.author}
+                    p Submitter: #{resource.submitter}
+                    p Date: #{resource.creationDate}
+                    p Tags: #{resource.tags.join(', ')}
+                    p Rating: #{resource.evaluation} ⭐
+                .resource-actions
+                    a.button(href="/resources/download/#{resource._id}") Download
+                    a.button(onclick=`commentResource('${resource._id}')`) Comment
+                    a.button(onclick=`rateResource('${resource._id}')`) Rate
+
+            .other-resources-section
+                h3.text-center Other Resources by the same author - #{resource.author}
+                each otherResource in authorResources
+                    a.card-link(href=`/resources/${otherResource._id}`)
+                        .other-resource-card
+                            .other-resource-title #{otherResource.title}
+                            p.subtitle #{otherResource.subtitle || 'Indefinido'}
+                            p Type: #{otherResource.type}
+                            p Author: #{otherResource.author}
+                            p Submitter: #{otherResource.submitter}
+                            p Date: #{otherResource.creationDate}
+                            p Tags: #{otherResource.tags.join(', ')}
+                            p Rating: #{otherResource.evaluation} ⭐
+
+        .right-section
+            h3.text-center Latest Comments
+            each comment in resource.comments.slice(0, 5)
+                .comment
+                    p.comment-text #{comment.content}
+                    p.comment-meta by #{comment.user} on #{comment.postDate}

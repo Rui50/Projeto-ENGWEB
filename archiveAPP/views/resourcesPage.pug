@@ -1,0 +1,62 @@
+extends layout
+
+block content
+    
+    //if u.level === "admin" || u.level === "producer"
+    //    a(href="/resources/add")
+    //        img.w3-margin(src="/images/add.png" alt="add icon" width="30" height="30")
+    .centered-nav.w3-bar.w3-theme-d5
+        a.w3-bar-item.w3-button(href="/recursos") Recursos
+        a.w3-bar-item.w3-button(href="/profile") Profile
+        a.w3-bar-item.w3-button(href="/news") News
+    
+    .w3-container
+        .w3-row.w3-margin-bottom
+            .w3-col.s6
+                h3 Search
+            .w3-col.s6
+                .search-container
+                    input.search-input(type="text" placeholder="Search...")
+                    select.filter-select(name="filtro")
+                        option(value="title") Title
+                        option(value="type") Type
+                        option(value="author") Author
+
+        each r in resourceList
+            a(href=`/resources/${r['_id']}`)
+                .resource-card
+                    .resource-title #{r.title}
+                    .resource-info 
+                        p 
+                            b Subtitle: 
+                            | #{r.subtitle || 'Indefinido'}
+                        p 
+                            b Tipo: 
+                            | #{r.type}
+                        p 
+                            b Autor:
+                            | #{r.author}
+                        p 
+                            b Submitter: 
+                            | #{r.submitter}
+                        p 
+                            b Date: 
+                            | #{r.creationDate}
+                        p 
+                            b Tags: 
+                            | #{r.tags.join(', ')}
+                        p 
+                            b Rating: 
+                            | #{r.evaluation} ⭐
+                    .resource-actions
+                        a(href="/resources/details/#{r._id}")
+                            img.w3-margin(src="/images/details.png" alt="details icon" width="30" height="30")
+                        a(onclick=`evaluateResource('${r._id}')`)
+                            img.w3-round-xlarge.w3-margin(src="/images/estrela.png" alt="star icon" width="30" height="30")
+                        a(href="/resources/download/#{r._id}") 
+                            img.w3-round-xlarge.w3-margin(src="/images/download.png" alt="download icon" width="30" height="30")
+                        //if u.level === "admin" || (u.level === "producer" && r.submitter === u.username)
+                        a(href="/resources/edit/#{r._id}")
+                            img.w3-round-large.w3-margin(src="/images/edit.png" alt="edit icon" width="30" height="30")
+                        a(href="/resources/delete/#{r._id}")
+                            img.w3-round-large.w3-margin(src="/images/delete.png" alt="delete icon" width="30" height="30")

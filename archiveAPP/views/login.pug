@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  .w3-container.w3-padding-64.w3-theme-l5
+    h1.welcome-message Educational Archive
+  .w3-container
+    .w3-card-4.custom-card
+      .w3-container.w3-theme
+        h2 Login
+      form.w3-container(action="/login", method="post")
+        .w3-section
+          label(for="username") Username
+          input.w3-input.w3-border(type="text", name="username", required)
+        .w3-section
+          label(for="password") Password
+          input.w3-input.w3-border(type="password", name="password", required)
+        button.w3-button.w3-block.w3-theme-d1.w3-margin-top(type="submit") Login
+        button.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/") Back
