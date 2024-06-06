@@ -1,0 +1,58 @@
+extends layout
+
+block content
+  .w3-bar.w3-center.w3-theme-d5
+    a.w3-bar-item.w3-button(href="/resources") Recursos
+    a.w3-bar-item.w3-button(href="/profile") Profile
+    a.w3-bar-item.w3-button(href="/news") News
+
+  .w3-container.w3-padding-64.w3-theme-l5.text-center
+    h1.welcome-message Add Resource
+
+    if errors
+      .w3-panel.w3-red
+        h3 Error
+        ul
+          each error in errors
+            li= error
+
+    form(action="/resources/upload", method="post", enctype="multipart/form-data")
+      .w3-card-4.custom-card
+        .w3-container.w3-theme
+          h2 Resource Upload
+        .w3-container
+          label(for="file") File:
+          input.w3-input(type="file", name="resource", required)
+        .w3-container.w3-padding
+          button.w3-button.w3-block.w3-theme-d1(type="submit") Upload Resource
+
+    a.w3-button.w3-block.w3-theme-d2.w3-margin-top(href="/") Back
+
+    // Help Section
+    .w3-container.w3-padding-64.w3-theme-l5.text-center
+      button.w3-button.w3-theme-d2(onclick="toggleHelp()") Help
+      #help-box.w3-panel.w3-pale-blue.w3-leftbar.w3-border-blue(style="display:none")
+        h3 Instructions
+        p To properly create a resource ZIP file, make sure it includes the following files:
+        ul
+          li manifest.txt - This file should list all the files included in the ZIP, one per line.
+          li resource-data.json - This JSON file should contain metadata about the resource, including:
+            ul
+              li title: The title of the resource
+              li author: The author of the resource
+              li creationDate: The creation date of the resource
+              li type: The type of the resource
+              li visibility: The visibility status (public or private)
+              li tags: A comma-separated list of tags
+              li year: The year of creation
+          li files/ - This directory should contain all the resource files
+
+    script.
+      function toggleHelp() {
+        var helpBox = document.getElementById('help-box');
+        if (helpBox.style.display === 'none') {
+          helpBox.style.display = 'block';
+        } else {
+          helpBox.style.display = 'none';
+        }
+      }

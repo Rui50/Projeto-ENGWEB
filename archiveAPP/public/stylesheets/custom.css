@@ -302,3 +302,12 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
+.button-container {
+  text-align: center;
+}
+
+.button-container a {
+  display: inline-block;
+  margin: 0 5px;
+}

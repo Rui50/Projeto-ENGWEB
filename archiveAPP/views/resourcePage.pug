@@ -24,12 +24,24 @@ block content
                 .resource-details
                     p.resource-title #{resource.title}
                     p.subtitle #{resource.subtitle || 'Indefinido'}
-                    p Tipo: #{resource.type}
-                    p Autor: #{resource.author}
-                    p Submitter: #{resource.submitter}
-                    p Date: #{resource.creationDate}
-                    p Tags: #{resource.tags.join(', ')}
-                    p Rating: #{resource.evaluation} ⭐
+                    p 
+                        b Tipo: 
+                        | #{resource.type}
+                    p 
+                        b Autor:
+                        | #{resource.author}
+                    p 
+                        b Submitter: 
+                        | #{resource.submitter}
+                    p 
+                        b Date: 
+                        | #{resource.creationDate}
+                    p 
+                        b Tags: 
+                        | #{resource.tags.join(', ')}
+                    p 
+                        b Rating: 
+                        | #{resource.evaluation} ⭐
                 .resource-actions
                     a.button(href="/resources/download/#{resource._id}") Download
                     a.button(onclick=`commentResource('${resource._id}')`) Comment
@@ -58,3 +70,4 @@ block content
                             .comment-card
                                 p.comment-text #{comment.content}
                                 p.comment-meta by #{comment.user} on #{comment.postDate}
+                    a.button.centered-button(href=`/resources/comments/${resource._id}`) See All Comments

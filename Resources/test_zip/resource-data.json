@@ -1,0 +1,10 @@
+{
+    "title": "Test Resource",
+    "author": "John Doe",
+    "creationDate": "2024-06-05",
+    "type": "Test",
+    "visibility": "public",
+    "tags": ["test", "example"],
+    "year": 2024
+  }
+  

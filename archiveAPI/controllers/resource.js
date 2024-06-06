@@ -25,6 +25,32 @@ module.exports.findByType = type => {
         .exec()
 }
 
+module.exports.getByTitle = title => {
+    return Resource
+        .find({ title: {$regex: title} })
+        .then(resposta => {
+            return resposta
+        })
+        .catch(erro => {
+            return erro
+        })
+}
+
+module.exports.SearchByAuthor = author => {
+    const searchRegex = new RegExp(author, 'i');
+    return Resource
+        .find({ author: { $regex: searchRegex } })
+        .exec();
+}
+
+module.exports.SearchByType = type => {
+    const searchRegex = new RegExp(type, 'i');
+    return Resource
+        .find({ type: { $regex: searchRegex } })
+        .exec();
+
+}
+
 module.exports.insert = res => {
     var newResource = new Resource(res)
     return newResource.save()
@@ -65,6 +91,13 @@ module.exports.getComments = id => {
         .findOne({ _id: id }, { comments: 1 })
         .exec()
 }
+
+module.exports.getCommentsWithResource = id => {
+    return Resource
+        .findOne({ _id: id }, { title: 1, comments: 1 })
+        .exec();
+};
+
 
 module.exports.getRankings = id => {
     return Resource

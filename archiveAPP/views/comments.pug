@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    .modal(id="display")
+    .centered-nav.w3-bar.w3-theme-d5
+        a.w3-bar-item.w3-button(href="/resources") Recursos
+        a.w3-bar-item.w3-button(href="/profile") Profile
+        a.w3-bar-item.w3-button(href="/news") News
+    
+    .w3-container.w3-padding-64.w3-theme-l5
+        h1.w3-center 
+            b Comments
+        if resource
+            h2.w3-center= resource.title
+            .w3-content.w3-margin-top(style="max-width:800px; margin:auto;")
+                if resource.comments.length > 0
+                    each comment in resource.comments
+                        .comment-card
+                            p= comment.content
+                            p Posted by: #{comment.user} at #{comment.postDate}
+                else
+                    p No comments yet
+        else
+            p Resource not found

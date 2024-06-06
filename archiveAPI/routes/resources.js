@@ -1,7 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var Resources = require('../controllers/resource')
-var News = require('../controllers/new')
+var News = require('../controllers/new');
+const resource = require('../models/resource');
+
+const fs = require('fs');
+const StreamZip = require('node-stream-zip');
+const multer = require('multer');
+const upload = multer({ dest: 'archive/' });
 
 /**
  * @api {get}
@@ -29,7 +35,7 @@ router.get('type/:type', function(req, res, next) {
 });
 
 router.get('/comments/:id', function(req, res, next) {
-    Resources.getComments(req.params.id)
+    Resources.findById(req.params.id)
         .then(dados => res.jsonp(dados))
         .catch(erro => res.status(500).jsonp(erro))
 });
@@ -40,14 +46,69 @@ router.get('/ratings/:id', function(req, res, next) {
         .catch(erro => res.status(500).jsonp(erro))
 });
 
+router.get('/rankings', function(req, res, next) {
+    
+    Resources.list()
+        .then(resources => {
+
+            const resourcesWithAverage = resources.map(resource => {
+                
+                if (!resource.rankings || resource.rankings.length === 0) {
+                    return {
+                        _id: resource._id,
+                        title: resource.title,
+                        averageStars: 0,
+                        path: resource.path
+                    };
+                }
+
+                const totalStars = resource.rankings.reduce((acc, curr) => {
+                    return acc + curr.stars;
+                }, 0);
+
+                const averageStars = totalStars / resource.rankings.length;
+                return {
+                    _id: resource._id,
+                    title: resource.title,
+                    averageStars: averageStars,
+                    path: resource.path
+                };
+            });
+
+            const sortedResources = resourcesWithAverage.sort((a, b) => b.averageStars - a.averageStars);
+
+            res.json(sortedResources);
+        })
+        .catch(err => {
+            console.error('Error fetching and calculating rankings for resources:', err);
+            res.status(500).json({ error: 'Internal server error' });
+        });
+});
+
+router.post('/search', function(req, res, next) {
+    console.log('Search request received:', req.body);
+    if(req.body.filter == 'title'){
+        Resources.getByTitle(req.body.search)
+            .then(dados => res.jsonp(dados))
+            .catch(erro => res.status(500).jsonp(erro))
+    } else if(req.body.filter == 'author'){
+        Resources.SearchByAuthor(req.body.search)
+            .then(dados => res.jsonp(dados))
+            .catch(erro => res.status(500).jsonp(erro))
+    } else if(req.body.filter == 'type'){
+        Resources.SearchByType(req.body.search)
+            .then(dados => res.jsonp(dados))
+            .catch(erro => res.status(500).jsonp(erro))
+    }
+});
+
+
 // GET /resources/:id - Devolve a informação de um recurso
 router.get('/:id', function(req, res, next) {
     Resources.findById(req.params.id)
         .then(dados => res.jsonp(dados))
         .catch(erro => res.status(500).jsonp(erro))
 });
-
-
 
 /**
  * @api {post}
@@ -74,6 +135,148 @@ router.post('/', function(req, res, next) {
             console.error("Error inserting resource:", erro);
             res.status(500).jsonp(erro);
         });
+});
+
+router.post('/upload', upload.single('resource'), function(req, res, next) {
+    var date = new Date().toISOString().substring(0, 16);
+    var errors = [];
+    var resource = {
+        content: [],
+        allFiles: [],
+        manifest: {
+            exists: true,
+            valid: true
+        },
+        metadata: {
+            exists: true,
+            valid: true
+        }
+    };
+
+    if (req.file != undefined && (req.file.mimetype == 'application/zip' || req.file.mimetype == "application/x-zip-compressed")) {
+        var zip = new StreamZip({
+            file: req.file.path,
+            storeEntries: true
+        });
+
+        zip.on("error", (err) => {
+            res.render("error", { error: err });
+        });
+
+        zip.on('ready', () => {
+            for (const entry of Object.values(zip.entries())) {
+                resource.allFiles.push(entry.name);
+                if (entry.name != "manifest.txt" && entry.name != "metadata.json") {
+                    resource.content.push(entry.name);
+                }
+            }
+
+            if (resource.content.length == 0) {
+                errors.push("The resource does not contain content.");
+            }
+
+            if (resource.allFiles.includes("manifest.txt")) {
+                let manifest = zip.entryDataSync("manifest.txt").toString('utf8').replace('\n', '');
+                let files = manifest.split('|');
+                for (let file of resource.content) {
+                    if (!files.includes(file)) {
+                        resource.manifest.valid = false;
+                    }
+                }
+
+                if (!resource.manifest.valid) {
+                    errors.push("The resource does not contain a valid manifest file.");
+                }
+            } else {
+                resource.manifest.exists = false;
+                errors.push("The resource does not contain a manifest file.");
+            }
+
+            let metadata;
+            if (resource.allFiles.includes("metadata.json")) {
+                let jsonFile = zip.entryDataSync("metadata.json").toString('utf8');
+                metadata = JSON.parse(jsonFile);
+                req.body.metadata = metadata;
+
+                if (!(metadata.hasOwnProperty('title') && metadata.hasOwnProperty('type') && metadata.hasOwnProperty('dateCreation') && metadata.hasOwnProperty('visibility') && metadata.hasOwnProperty('author'))) {
+                    resource.metadata.valid = false;
+                }
+
+                if (["Article", "Sheet", "Report", "Test", "Slides", "Thesis"].indexOf(metadata.type) === -1) {
+                    resource.metadata.valid = false;
+                }
+
+                if (["Public", "Private"].indexOf(metadata.visibility) === -1) {
+                    resource.metadata.valid = false;
+                }
+
+                if (!resource.metadata.valid) {
+                    errors.push("The resource contains an invalid metadata file.");
+                }
+            } else {
+                resource.metadata.exists = false;
+                errors.push("The resource does not contain a metadata file.");
+            }
+
+            if (errors.length != 0) {
+                let path = __dirname + '/../' + req.file.path;
+                try {
+                    fs.unlinkSync(path); // Remove invalid resource
+                } catch (e) {
+                    console.log(e);
+                }
+                res.render('addResourceForm', { errors: errors, date: date });
+            } else {
+                let data = zip.entryDataSync("metadata.json").toString('utf8');
+                let metadataObj = JSON.parse(data);
+
+                var newResource = {
+                    resourceName: req.file.originalname,
+                    files: resource.content,
+                    title: metadataObj.title,
+                    subtitle: metadataObj.subtitle,
+                    type: metadataObj.type,
+                    dateCreation: metadataObj.dateCreation,
+                    dateSubmission: new Date().toISOString().slice(0, 19).split('T').join(' '),
+                    visibility: metadataObj.visibility,
+                    author: metadataObj.author,
+                    submitter: req.user.username,
+                    evaluation: {
+                        ev: 0,
+                        eved_by: []
+                    }
+                };
+
+                let oldPath = __dirname + '/../' + req.file.path;
+                let newPath = __dirname + '/../uploads/' + metadataObj.type + '/' + req.file.originalname;
+
+                fs.rename(oldPath, newPath, erro => {
+                    if (erro) res.render('error', { error: erro });
+                    else {
+                        axios.post('http://localhost:5001/resources', newResource)
+                            .then(response => {
+                                var newNews = {
+                                    title: newResource.title,
+                                    content: 'New resource posted: ' + newResource.title + ' by ' + newResource.author,
+                                    user: newResource.author,
+                                    date: newResource.dateSubmission,
+                                };
+
+                                axios.post('http://localhost:5001/news', newNews)
+                                    .then(response => {
+                                        res.redirect('/resources');
+                                    })
+                                    .catch(e => res.render('error', { error: e }));
+                            })
+                            .catch(error => res.render('error', { error: error }));
+                    }
+                });
+            }
+        });
+    } else {
+        errors.push("The resource is not a zip file!");
+        res.render('addResourceForm', { errors: errors });
+    }
 });
 
 // POST /resources/:id/comments - Insere um comentário num recurso
