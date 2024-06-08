@@ -11,7 +11,6 @@ block content
         .left-section
             h3.text-center Latest Ratings
             .ratings-container
-                // Wrap each set of cards in a container
                 .cards-container
                     each rating in resource.rankings.slice(0, 5)
                         .rating-card
@@ -28,7 +27,7 @@ block content
                         b Tipo: 
                         | #{resource.type}
                     p 
-                        b Autor:
+                        b Autor: 
                         | #{resource.author}
                     p 
                         b Submitter: 
@@ -41,9 +40,9 @@ block content
                         | #{resource.tags.join(', ')}
                     p 
                         b Rating: 
-                        | #{resource.evaluation} ⭐
+                        | #{resource.averageRating} ⭐
                 .resource-actions
-                    a.button(href="/resources/download/#{resource._id}") Download
+                    a.button(href=`/resources/download/${resource._id}`) Download
                     a.button(onclick=`commentResource('${resource._id}')`) Comment
                     a.button(onclick=`rateResource('${resource._id}')`) Rate
 
@@ -53,18 +52,17 @@ block content
                     a.card-link(href=`/resources/${otherResource._id}`)
                         .other-resource-card
                             .other-resource-title #{otherResource.title}
-                            p.subtitle #{otherResource.subtitle || 'Indefinido'}
+                            //p.subtitle #{otherResource.subtitle || 'Indefinido'}
                             p Type: #{otherResource.type}
-                            p Author: #{otherResource.author}
-                            p Submitter: #{otherResource.submitter}
+                            //p Author: #{otherResource.author}
+                            //p Submitter: #{otherResource.submitter}
                             p Date: #{otherResource.creationDate}
                             p Tags: #{otherResource.tags.join(', ')}
-                            p Rating: #{otherResource.evaluation} ⭐
+                            p Rating: #{otherResource.averageRating} ⭐
 
         .right-section
             h3.text-center Latest Comments
                 .comments-container
-                    // Wrap each set of cards in a container
                     .cards-container
                         each comment in resource.comments.slice(0, 5)
                             .comment-card

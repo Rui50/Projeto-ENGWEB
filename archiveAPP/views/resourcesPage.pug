@@ -51,7 +51,7 @@ block content
                             | #{r.averageRating} ⭐
                     .resource-actions
                         .button-container
-                            a(href="/resources/#{r._id}")
+                            a(href=`/resources/${r._id}`)
                                 img.w3-margin(src="/images/file.png" alt="details icon")
                             a(href="/resources/download/#{r._id}") 
                                 img.w3-margin(src="/images/download.png" alt="download icon")

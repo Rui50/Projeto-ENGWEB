@@ -215,7 +215,8 @@ router.post('/upload', upload.single('resource'), function (req, res, next) {
 
                 const oldPath = path.join(__dirname, '..', req.file.path);
                 const originalFileName = req.file.originalname;
-                const newFileName = `${resource._id}-${originalFileName}`;
+                //const newFileName = `${resource._id}-${originalFileName}`;
+                const newFileName = `${resource._id}.zip`;
                 const newPath = path.join(__dirname, '..', 'archive', metadataObject.type, newFileName);
                 
 
@@ -350,23 +351,57 @@ router.post('/search', function(req, res, next) {
     }
 });
 
+router.get('/download/:id', function(req, res, next) {
+    var id = req.params.id;
+    // quando tiver users e perms a dar vou ter de verificar se o user tem permissões para fazer download
+    axios.get(`http://localhost:5001/resources/${id}`)
+        .then(response => {
+            const resource = response.data;
+            console.log('Resource:', resource)
+            const resourcePath = __dirname + '/../archive/' + resource.type + '/' + resource._id + '.zip';
+            res.download(resourcePath);
+        })
+        .catch(error => {
+            console.error('Error fetching resource:', error);
+            res.render('error', { error: error });
+        });
+});
+
 
 router.get('/:id', function(req, res, next) {
-    var date = new Date().toISOString().substring(0,19);
+    var date = new Date().toISOString().substring(0, 19);
     var id = req.params.id;
     var resource;
 
     axios.get(`http://localhost:5001/resources/${id}`)
         .then(resourceResponse => {
             resource = resourceResponse.data;
-            
+
+            const rankings = resource.rankings || [];
+            const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
+            const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
+            console.log('Average rating:', averageRating);
+
+            resource.averageRating = averageRating;
+
             var author = resource.author;
             return axios.get(`http://localhost:5001/resources?author=${author}`);
         })
         .then(authorResourcesResponse => {
             var authorResources = authorResourcesResponse.data;
-            
-            res.render('resourcePage', { resource: resource, authorResources: authorResources, resourceList: authorResources, d: date });
+
+            authorResources.forEach(resource => {
+                const rankings = resource.rankings || [];
+                const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
+                resource.averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
+            });
+
+            res.render('resourcePage', { 
+                resource: resource, 
+                authorResources: authorResources, 
+                resourceList: authorResources, 
+                d: date 
+            });
         })
         .catch(error => {
             res.render('error', { error: error });
