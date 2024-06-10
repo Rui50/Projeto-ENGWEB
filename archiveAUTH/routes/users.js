@@ -13,7 +13,7 @@ router.get('/', auth.verificaAcesso ,function(req, res, next) {
     .catch(erro => res.status(500).jsonp(erro))
 });
 
-router.post('/register'/*, auth.verificaAcesso*/, function (req, res, next) {
+router.post('/register', function (req, res, next) {
   var date = new Date().toISOString().substring(0, 19);
 
   console.log("Registration request body:", req.body);
@@ -33,18 +33,20 @@ router.post('/register'/*, auth.verificaAcesso*/, function (req, res, next) {
               console.error("Error registering user:", err);
               return res.status(500).jsonp({ error: err });
           }
-
-          jwt.sign({
-              username: req.body.username,
-              level: req.body.level
-          }, "ew2024", { expiresIn: 300 }, function (e, token) {
-              if (e) {
-                  console.error("Error generating token:", e);
-                  return res.status(401).jsonp({ error: e });
-              } else {
-                  console.log("Token generated:", token);
-                  return res.status(200).jsonp({ status: 'Registration Successful!', token: token });
-              }
+          passport.authenticate('local')(req, res, function () {
+            jwt.sign({
+                username: req.body.username,
+                level: req.body.level
+            }, "ew2024", { expiresIn: 300 }, function (e, token) {
+                if (e) {
+                    console.error("Error generating token:", e);
+                    return res.status(401).jsonp({ error: e });
+                } else {
+                    console.log("Token generated:", token);
+                    // Send the token back to the client
+                    return res.status(200).jsonp({ status: 'Registration Successful!', token: token });
+                }
+            });
           });
       });
 });
@@ -57,7 +59,6 @@ router.post('/login', auth.verificaAcesso ,function(req, res, next) {
         .then(user => {
           jwt.sign({
             username: req.body.username, level: user.level}, 
-            // sub: 'aula de EngWeb2024'},
             "ew2024", 
             {expiresIn: 3600}, 
             function(e, token){

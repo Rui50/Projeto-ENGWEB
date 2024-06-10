@@ -48,6 +48,18 @@ router.get('/login', function(req, res, next) {
   res.render('login', {data: data});
 });
 
+router.post('/login', function(req, res, next) {
+  var date = new Date().toISOString().substring(0,19)
+  axios.post('http://localhost:5002/users/login', req.body)
+    .then(dados => {
+      res.cookie('token', token, { httpOnly: true });
+      res.redirect('/recursos')
+    })
+    .catch(erro => {
+      res.render('error', {error: erro})
+    })
+});
+
 // GET /logout - Pagina de logout
 router.get('/logout', function(req, res, next) {
   res.clearCookie('token')
@@ -68,14 +80,14 @@ router.get('/news',  function(req, res, next) {
 });
 
 // GET /profile - Pagina de perfil
-router.get('/profile', function(req, res, next) {
+router.get('/profile', verifyToken, function(req, res, next) {
 
   Promise.all([
-   // axios.get('http://localhost:5001/users/' + req.user.username),
-    axios.get('http://localhost:5001/resources?author=' )//+ req.user.username)
+    axios.get('http://localhost:5002/users/' + req.user.username+ "?token=" + req.cookies.token),
+    axios.get('http://localhost:5001/resources?author=' + req.user.username)
   ])
-  .then(([/*userData,*/ resourcesData]) => {
-    res.render('profile', { /*user: userData.data,*/ resources: resourcesData.data });
+  .then(([userData, resourcesData]) => {
+    res.render('profile', { user: userData.data, resources: resourcesData.data });
   })
   .catch(error => {
     res.render('error', { error: error });
@@ -89,6 +101,10 @@ router.post('/register', (req, res) => {
         .then(userCheckResponse => {
           const userExists = userCheckResponse.data.username;
           if (userExists) {
+            const token = response.data.token;
+            
+            res.cookie('token', token, { httpOnly: true });
+
             res.render('registerCompleted');
           } else {
             res.render('error', { error: { message: 'User does not exist' } });
