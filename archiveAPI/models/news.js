@@ -5,6 +5,7 @@ var newsSchema = new mongoose.Schema({
     content : String,
     user : String,
     date : Date,
+    idResource : String,
 });
 
 module.exports = mongoose.model('News', newsSchema, 'news');

@@ -123,6 +123,7 @@ router.post('/', function(req, res, next) {
                 content: 'New resource posted: ' + resource.title + ' by ' + resource.author,
                 user: resource.author,
                 date: resource.registrationDate,
+                idResource: resource._id
             };
             return News.insert(newNews)
                 .then(dados => res.jsonp(dados))
@@ -288,7 +289,7 @@ router.post('/comments/:id', function(req, res, next) {
     var id = req.params.id;
     var comment = {
         content: req.body.content,
-        user: "teste",//req.body.user,
+        user: req.user.username,
         postDate: new Date()
     };
 
@@ -311,7 +312,7 @@ router.post('/ratings/:id', function(req, res, next) {
     Resources.findById(req.params.id)
         .then(resp => {
             var ranking = {
-                user: req.body.user,
+                user: req.user.user,
                 stars: req.body.stars
             }   
             

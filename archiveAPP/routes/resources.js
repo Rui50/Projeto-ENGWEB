@@ -9,6 +9,25 @@ var upload = multer({dest: 'archive'});
 const StreamZip = require('node-stream-zip');
 const path = require('path');
 
+var env = require('../config/env')
+
+function verificaToken(req, res, next){
+    if(req.cookies && req.cookies.token){
+      jwt.verify(req.cookies.token, "ew2024", function(e, payload){
+        if(e){
+          res.render('error', {error: "O token do pedido não é válido...", token: false})
+        }
+        else{ 
+          req.user = payload
+          next()
+        }
+      })
+    }else{
+      res.render('error', {error: "O pedido não tem um token...", token: false})
+    }
+  }
+  
+
 router.get('/', function(req, res, next) {
     const date = new Date().toISOString().substring(0, 19);
     

@@ -41,6 +41,25 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+
+app.use(function(req, res, next){
+  var myToken = req.query.token || req.body.token
+  if(myToken){
+    console.log(myToken)
+    jwt.verify(myToken, "ew2024", function(err, payload){
+      if(err){
+        res.status(401).jsonp({error: "Token inválido"})
+      }else{
+        req.user = payload 
+        next()
+      }
+    })
+  }
+  else{
+    res.status(401).jsonp({error: "Token inexistente"})
+  }
+})
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

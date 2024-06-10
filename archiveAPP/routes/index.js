@@ -8,23 +8,24 @@ var upload = multer({dest: 'uploads'});
 
 var jwt = require('jsonwebtoken');
 
+var env = require('../config/env')
+
 function verifyToken(req, res, next){
   if(req.cookies && req.cookies.token){
     jwt.verify(req.cookies.token, 'ew2024', function(err, payload){
       if(err){
-        res.status(401).jsonp({error: 'Token inválido!'})
+        res.status(401).jsonp({error: 'Token inválido!'});
       }
       else{
-        next()
-        req.user = payload
+        req.user = payload;
+        next();
       }
-    })
+    });
   }
   else{
-    res.status(401).jsonp({error: 'Token inexistente!'})
+    res.status(401).jsonp({error: 'Token inexistente!'});
   }
 }
-
 
 /**
  * @ gets
@@ -80,6 +81,28 @@ router.get('/profile', function(req, res, next) {
     res.render('error', { error: error });
   });
 });
+
+router.post('/register', (req, res) => {
+  axios.post(`${env.authAccessPoint}/users/register`, req.body)
+    .then(response => {
+      axios.get(`${env.authAccessPoint}/users/checkuser/${req.body.username}`)
+        .then(userCheckResponse => {
+          const userExists = userCheckResponse.data.username;
+          if (userExists) {
+            res.render('registerCompleted');
+          } else {
+            res.render('error', { error: { message: 'User does not exist' } });
+          }
+        })
+        .catch(checkError => {
+          res.render('error', { error: checkError });
+        });
+    })
+    .catch(registerError => {
+      res.render('error', { error: registerError });
+    });
+});
+
 
 
 

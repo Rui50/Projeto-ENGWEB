@@ -12,6 +12,9 @@ block content
           label(for="username") Username
           input.w3-input.w3-border(type="text", name="username", required)
         .w3-section
+          label(for="name") Name
+          input.w3-input.w3-border(type="text", name="name", required)
+        .w3-section
           label(for="email") Email
           input.w3-input.w3-border(type="email", name="email", required)
         .w3-section
@@ -20,5 +23,12 @@ block content
         .w3-section
           label(for="confirm_password") Confirm Password
           input.w3-input.w3-border(type="password", name="confirm_password", required)
+
+        .w3-section
+          label Choose User Level
+          select.w3-select(name="level")
+            option(value="admin") Admin
+            option(value="producer") Producer
+            option(value="consumer") Consumer
         button.w3-button.w3-block.w3-theme-d1.w3-margin-top(type="submit") Register
-        button.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/") Back
+        a.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/") Back
