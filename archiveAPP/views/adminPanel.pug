@@ -1,0 +1,49 @@
+extends layout
+
+block content
+    .admin-container
+        .admin-header
+            h1 Admin Panel
+
+            // Options
+            .options-container
+                a.action-button(href="#") Add Resource
+                a.action-button(href="#") Check Latest Comments
+
+        // Layout with columns
+        .admin-columns
+            // Users Column
+            .admin-column
+                h2 Users
+                each user in userList
+                    a.card-link(href=`/users/${user._id}`)
+                        .card
+                            .card-content
+                                p Username: #{user.username}
+                                p Email: #{user.email}
+                                // Add more user details as needed
+
+            // Resources Column
+            .admin-column
+                h2 Resources
+                each resource in resourceList
+                    a.card-link(href=`/resources/${resource._id}`)
+                        .card
+                            .card-content
+                                p Title: #{resource.title}
+                                p Type: #{resource.type}
+                                // Add more resource details as needed
+
+            // Comments Column
+            .admin-column
+                h2 Latest Comments
+                if latestComments && latestComments.length > 0
+                    each comment in latestComments
+                        .card
+                            .card-content
+                                p Comment: #{comment.content}
+                                p By: #{comment.user}
+                                // Add more comment details as needed
+                            a.action-button.delete-button(href="#" onclick="deleteComment('#{comment._id}')") Delete
+                else
+                    p No comments available

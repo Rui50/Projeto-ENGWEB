@@ -41,6 +41,14 @@ block content
                     p 
                         b Rating: 
                         | #{resource.averageRating} ⭐
+
+                if user.level === "admin"
+                    .resource-actions
+                        a.button(href=`/resources/edit/${resource._id}`) Edit
+                        form(action=`/resources/delete/${resource._id}`, method="POST", style="display:inline;")
+                            button(type="submit", class="button") Delete
+
+                
                 .resource-actions
                     a.button(href=`/resources/download/${resource._id}`) Download
                     a.button(onclick=`commentResource('${resource._id}')`) Comment

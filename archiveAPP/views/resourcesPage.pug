@@ -6,9 +6,22 @@ block content
     //    a(href="/resources/add")
     //        img.w3-margin(src="/images/add.png" alt="add icon" width="30" height="30")
     .centered-nav.w3-bar.w3-theme-d5
-        a.w3-bar-item.w3-button(href="/resources") Recursos
-        a.w3-bar-item.w3-button(href="/profile") Profile
-        a.w3-bar-item.w3-button(href="/news") News
+        // Left Section
+        .navbar-left
+
+        // Middle Section
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            if currentUser.level === 'admin'
+                a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+            
+        // Right Section
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
+
     
     .w3-container
         form.w3-row.w3-margin-bottom(action="/resources/search" method="POST")
@@ -35,7 +48,7 @@ block content
                             b Tipo: 
                             | #{r.type}
                         p 
-                            b Autor:
+                            b Autor: 
                             | #{r.author}
                         p 
                             b Submitter: 
@@ -53,5 +66,5 @@ block content
                         .button-container
                             a(href=`/resources/${r._id}`)
                                 img.w3-margin(src="/images/file.png" alt="details icon")
-                            a(href="/resources/download/#{r._id}") 
+                            a(href=`/resources/download/${r._id}`) 
                                 img.w3-margin(src="/images/download.png" alt="download icon")

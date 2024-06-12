@@ -15,32 +15,40 @@ block content
           b User Information
       .w3-container
         p 
-          strong Username:
+          strong Username: 
           | #{user.username}
+        p 
+          strong Name: 
+          | #{user.name}
         p 
           strong Email: 
           | #{user.email}
         p 
+          strong Last Access: 
+          | #{user.lastAccess}
+        p 
           strong Role: 
           | #{user.level}
 
-    hr
+    if user.level === "admin" || user.level === "producer"
 
-    a.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/resources/add") Add Resource
+      hr
 
-    hr
+      a.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/resources/add") Add Resource
 
-    h2 Your Resources in the Archive
-    if resources.length > 0
-      each resource in resources
-        .w3-card-4.w3-margin.w3-white
-          .w3-container.w3-theme
-            h3 #{resource.title}
-          .w3-container
-            p #{resource.description}
-          .w3-container.w3-padding
-            a.w3-button.w3-theme-d1(href=`/resources/${resource._id}`) View
-            a.w3-button.w3-theme-d1(href=`/resources/edit-resource/${resource._id}`) Edit
-            a.w3-button.w3-theme-d1(href=`/resources/delete/${resource._id}`) Delete
-    else
-      p No resources found.
+      hr
+
+      h2 Your Resources in the Archive
+      if resources.length > 0
+        each resource in resources
+          .w3-card-4.w3-margin.w3-white
+            .w3-container.w3-theme
+              h3 #{resource.title}
+            .w3-container
+              p #{resource.description}
+            .w3-container.w3-padding
+              a.w3-button.w3-theme-d1(href=`/resources/${resource._id}`) View
+              a.w3-button.w3-theme-d1(href=`/resources/edit-resource/${resource._id}`) Edit
+              a.w3-button.w3-theme-d1(href=`/resources/delete/${resource._id}`) Delete
+      else
+        p No resources found.

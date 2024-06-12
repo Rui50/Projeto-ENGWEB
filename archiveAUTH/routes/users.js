@@ -51,30 +51,49 @@ router.post('/register', function (req, res, next) {
       });
 });
 
-router.post('/login', auth.verificaAcesso ,function(req, res, next) {
-  var date = new Date().toISOString().substring(0,19)
+router.post('/login', passport.authenticate('local'), function(req, res, next) {
+  const date = new Date().toISOString().substring(0, 19);
+  console.log('Login request received:', req.body);
+
   User.getUser(req.body.username)
     .then(user => {
+      if (!user) {
+        console.error('User not found:', req.body.username);
+        return res.status(401).jsonp({ error: 'User not found' });
+      }
+      console.log('User found:', user);
+
       User.loginUser(req.body.username, date)
-        .then(user => {
-          jwt.sign({
-            username: req.body.username, level: user.level}, 
-            "ew2024", 
-            {expiresIn: 3600}, 
-            function(e, token){
-  
-            if(e){
-              res.status(401).jsonp({error: "Erro na geracao do token! "+ e})
+        .then(() => {
+          console.log('User login updated:', req.body.username);
+          
+          jwt.sign(
+            { username: req.body.username, level: user.level },
+            "ew2024",
+            { expiresIn: 3600 },
+            (err, token) => {
+              if (err) {
+                console.error('Error generating token:', err);
+                return res.status(500).jsonp({ error: "Error generating token! " + err });
+              }
+              console.log('Token generated:', token);
+              res.status(200).jsonp({ token: token });
             }
-            else{
-              res.status(200).jsonp({token: token})
-            }
-          })
+          );
         })
-        .catch(erro => res.status(500).jsonp(erro))
+        .catch(err => {
+          console.error('Error updating login info:', err);
+          res.status(500).jsonp(err);
+        });
     })
-    .catch(erro => res.status(500).jsonp(erro))
+    .catch(err => {
+      console.error('Error retrieving user:', err);
+      res.status(500).jsonp(err);
+    });
 });
+
+
+module.exports = router;
 
 router.get('/checkuser/:id' ,function(req, res, next) {
   User.getUser(req.params.id)

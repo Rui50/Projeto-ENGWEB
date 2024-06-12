@@ -9,53 +9,63 @@ var upload = multer({dest: 'archive'});
 const StreamZip = require('node-stream-zip');
 const path = require('path');
 
+var jwt = require('jsonwebtoken');
 var env = require('../config/env')
 
-function verificaToken(req, res, next){
+function verifyToken(req, res, next){
     if(req.cookies && req.cookies.token){
-      jwt.verify(req.cookies.token, "ew2024", function(e, payload){
-        if(e){
-          res.render('error', {error: "O token do pedido não é válido...", token: false})
+      jwt.verify(req.cookies.token, 'ew2024', function(err, payload){
+        if(err){
+          res.status(401).jsonp({error: 'Token inválido!'});
         }
-        else{ 
-          req.user = payload
-          next()
+        else{
+          req.user = payload;
+          next();
         }
-      })
-    }else{
-      res.render('error', {error: "O pedido não tem um token...", token: false})
+      });
+    }
+    else{
+      res.status(401).jsonp({error: 'Token inexistente!'});
     }
   }
-  
 
-router.get('/', function(req, res, next) {
+  router.get('/', verifyToken, function(req, res, next) {
     const date = new Date().toISOString().substring(0, 19);
     
     axios.get('http://localhost:5001/resources')
-      .then(dados => {
-        const resources = dados.data.map(resource => {
-          const rankings = resource.rankings || [];
-          const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
-          const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
-          console.log('Average rating:', averageRating)
-          return {
-            ...resource,
-            averageRating: averageRating
-          };
-        });
-        res.render('resourcesPage', { resourceList: resources, d: date });
-      })
-      .catch(erro => {
-        res.render('error', { error: erro });
-      });
-  });
+        .then(dados => {
+            const resources = dados.data.map(resource => {
+                const rankings = resource.rankings || [];
+                const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
+                const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
+                console.log('Average rating:', averageRating)
+                return {
+                    ...resource,
+                    averageRating: averageRating
+                };
+            });
 
-router.get('/add', function(req, res, next) {
+            // Fetch current user's data
+            axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
+                .then(userResponse => {
+                    const userData = userResponse.data;
+                    res.render('resourcesPage', { resourceList: resources, d: date, currentUser: userData });
+                })
+                .catch(error => {
+                    res.render('error', { error: error });
+                });
+        })
+        .catch(error => {
+            res.render('error', { error: error });
+        });
+});
+
+router.get('/add', verifyToken, function(req, res, next) {
   var data = new Date().toISOString().substring(0,19)
   res.render('uploadResource', {/*u: req.user,*/data: data});
 });
 
-router.get('/rankings', function(req, res, next) {
+router.get('/rankings', verifyToken,  function(req, res, next) {
     axios.get('http://localhost:5001/resources/rankings')
         .then(dados => {
             res.render('rankings', {rankingList: dados.data});
@@ -65,7 +75,7 @@ router.get('/rankings', function(req, res, next) {
         })
 });
 
-router.get('/comments/:id', function(req, res, next) {
+router.get('/comments/:id', verifyToken, function(req, res, next) {
     axios.get(`http://localhost:5001/resources/${req.params.id}`)
         .then(response => {
             const resource = response.data;
@@ -77,7 +87,7 @@ router.get('/comments/:id', function(req, res, next) {
 });
 
 
-router.get('/edit-resource/:id', function(req, res, next) {
+router.get('/edit-resource/:id', verifyToken,  function(req, res, next) {
     var id = req.params.id;
     var resource;
     
@@ -91,7 +101,7 @@ router.get('/edit-resource/:id', function(req, res, next) {
         });
 });
 
-router.post('/add', upload.single('file'), function (req, res, next) {
+router.post('/add', verifyToken, upload.single('file'), function (req, res, next) {
     console.log('Received form data:', req.body);
   
     if (req.file) {
@@ -132,7 +142,7 @@ router.post('/add', upload.single('file'), function (req, res, next) {
         });
 });
 
-router.post('/upload', upload.single('resource'), function (req, res, next) {
+router.post('/upload', verifyToken, upload.single('resource'), function (req, res, next) {
     let errors = [];
     let resource = {
         _id: uuidv4(),
@@ -226,6 +236,7 @@ router.post('/upload', upload.single('resource'), function (req, res, next) {
                     creationDate: metadataObject.creationDate,
                     registrationDate: new Date(),
                     author: metadataObject.author,
+                    //submitter : req.user.username,
                     visibility: metadataObject.visibility,
                     tags: metadataObject.tags || [],
                     comments: [],
@@ -288,7 +299,7 @@ router.post('/upload', upload.single('resource'), function (req, res, next) {
 
 
 
-router.post('/comment/:id', function(req, res, next) {
+router.post('/comment/:id', verifyToken, function(req, res, next) {
     console.log('Received comment data:', req.body)
     var id = req.params.id;
     var comment = {
@@ -306,7 +317,7 @@ router.post('/comment/:id', function(req, res, next) {
         });
 });
 
-router.post('/rate/:id', function(req, res, next) {
+router.post('/rate/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
     var ranking = {
         stars: req.body.stars,
@@ -323,7 +334,7 @@ router.post('/rate/:id', function(req, res, next) {
         });
 });
 
-router.post('/edit/:id', function(req, res, next) {
+router.post('/edit/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
     var resourceData = {
         type: req.body.type,
@@ -345,7 +356,7 @@ router.post('/edit/:id', function(req, res, next) {
         });
 });
 
-router.post('/search', function(req, res, next) {
+router.post('/search', verifyToken, function(req, res, next) {
     console.log('Search request received:', req.body); 
     if(req.body.search == ""){
         axios.get('http://localhost:5001/resources')
@@ -370,7 +381,7 @@ router.post('/search', function(req, res, next) {
     }
 });
 
-router.get('/download/:id', function(req, res, next) {
+router.get('/download/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
     // quando tiver users e perms a dar vou ter de verificar se o user tem permissões para fazer download
     axios.get(`http://localhost:5001/resources/${id}`)
@@ -386,20 +397,72 @@ router.get('/download/:id', function(req, res, next) {
         });
 });
 
+router.post('/delete/:id', verifyToken, function(req, res, next) {
+    axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
+        .then(response => {
+            const user = response.data;
+            if (user.level === 'admin') {
+                const id = req.params.id;
 
-router.get('/:id', function(req, res, next) {
+                axios.get(`http://localhost:5001/resources/${id}`)
+                    .then(resourceResponse => {
+                        const resource = resourceResponse.data;
+
+                        axios.delete(`http://localhost:5001/resources/${id}`)
+                            .then(deleteResponse => {
+                                if (deleteResponse.data.deletedCount === 1) {
+                                    const resourcePath = path.join(__dirname, '..', 'archive', resource.type, `${resource._id}.zip`);
+
+                                    fs.unlink(resourcePath, (err) => {
+                                        if (err) {
+                                            console.error('Error deleting resource file:', err);
+                                            return res.render('error', { error: err });
+                                        }
+
+                                        res.redirect('/profile');
+                                    });
+                                } else {
+                                    console.error('Error: Resource was not deleted.');
+                                    res.render('error', { error: 'Resource was not deleted' });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error deleting resource:', error);
+                                res.render('error', { error: error });
+                            });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching resource:', error);
+                        res.render('error', { error: error });
+                    });
+            } else {
+                res.render('error', { error: 'You do not have permission to delete resources' });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user:', error);
+            res.render('error', { error: error });
+        });
+});
+
+router.get('/:id', verifyToken, function(req, res, next) {
     var date = new Date().toISOString().substring(0, 19);
     var id = req.params.id;
     var resource;
+    var user;
 
-    axios.get(`http://localhost:5001/resources/${id}`)
+    axios.get('http://localhost:5002/users/' + req.user.username+ "?token=" + req.cookies.token)
+        .then(userResponse => {
+            userData = userResponse.data; 
+            console.log(userData)
+            return axios.get(`http://localhost:5001/resources/${id}`);
+        })
         .then(resourceResponse => {
             resource = resourceResponse.data;
 
             const rankings = resource.rankings || [];
             const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
             const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
-            console.log('Average rating:', averageRating);
 
             resource.averageRating = averageRating;
 
@@ -419,6 +482,7 @@ router.get('/:id', function(req, res, next) {
                 resource: resource, 
                 authorResources: authorResources, 
                 resourceList: authorResources, 
+                user: userData,
                 d: date 
             });
         })

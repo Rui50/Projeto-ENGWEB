@@ -7,6 +7,8 @@ var logger = require('morgan');
 var mongoose = require('mongoose')
 
 // Import Passport and LocalStrategy
+var session = require('express-session')
+var { v4: uuidv4 } = require('uuid');
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy
 
@@ -29,12 +31,22 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+app.use(session({
+  genid: req => {
+    return uuidv4()
+  },
+  secret: 'ew2024',
+  resave: false,
+  saveUninitialized: true
+}));
+
 // Remove session middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

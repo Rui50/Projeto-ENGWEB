@@ -357,8 +357,14 @@ router.put('/:id', function(req, res, next) {
 // DELETE /resources/:id - Apaga um recurso
 router.delete('/:id', function(req, res, next) {
     Resources.remove(req.params.id)
-        .then(dados => res.jsonp(dados))
-        .catch(erro => res.status(500).jsonp(erro))
+        .then(resource => {
+            if (!resource) {
+                return res.status(404).json({ error: 'Resource not found' });
+            }
+            console.log(resource);
+            res.jsonp(resource);
+        })
+        .catch(error => res.status(500).jsonp(error));
 });
 
 module.exports = router;

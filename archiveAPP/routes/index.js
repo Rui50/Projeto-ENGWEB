@@ -50,24 +50,55 @@ router.get('/login', function(req, res, next) {
 
 router.post('/login', function(req, res, next) {
   var date = new Date().toISOString().substring(0,19)
+  console.log('Login request body:', req.body);
   axios.post('http://localhost:5002/users/login', req.body)
     .then(dados => {
+      const token = dados.data.token;
+
       res.cookie('token', token, { httpOnly: true });
-      res.redirect('/recursos')
+      res.redirect('/resources')
     })
     .catch(erro => {
       res.render('error', {error: erro})
     })
 });
 
-// GET /logout - Pagina de logout
+router.get('/adminpanel', verifyToken, function(req, res, next) {
+  axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
+      .then(userResponse => {
+          const user = userResponse.data;
+          if (user.level === 'admin') {
+              axios.get('http://localhost:5002/users' + "?token=" + req.cookies.token )
+                  .then(usersResponse => {
+                      const users = usersResponse.data;
+                      axios.get('http://localhost:5001/resources')
+                          .then(resourcesResponse => {
+                              const resources = resourcesResponse.data;
+                              res.render('adminpanel', { userList: users, resourceList: resources });
+                          })
+                          .catch(error => {
+                              res.render('error', { error: error });
+                          });
+                  })
+                  .catch(error => {
+                      res.render('error', { error: error });
+                  });
+          } else {
+              res.render('error', { error: 'You do not have permission to access this page' });
+          }
+      })
+      .catch(error => {
+          res.render('error', { error: error });
+      });
+});
+
 router.get('/logout', function(req, res, next) {
   res.clearCookie('token')
   res.redirect('/')
 });
 
 // GET /news - Pagina de noticias
-router.get('/news',  function(req, res, next) {
+router.get('/news', verifyToken,  function(req, res, next) {
   var date = new Date().toISOString().substring(0,19)
 
   axios.get('http://localhost:5001/news')
@@ -87,6 +118,7 @@ router.get('/profile', verifyToken, function(req, res, next) {
     axios.get('http://localhost:5001/resources?author=' + req.user.username)
   ])
   .then(([userData, resourcesData]) => {
+    console.log(userData.data);  
     res.render('profile', { user: userData.data, resources: resourcesData.data });
   })
   .catch(error => {

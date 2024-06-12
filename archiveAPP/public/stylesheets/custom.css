@@ -2,11 +2,6 @@ body {
   background-color: #999999;
 }
 
-.other-resource-card a {
-  text-decoration: none !important;
-}
-
-
 .welcome-message {
   font-size: 2.5em;
   font-weight: bold;
@@ -156,16 +151,14 @@ body {
   margin: 5px 0;
 }
 
-.other-resources-section {
-  margin-top: 20px;
-}
-
 .other-resource-card {
   margin-bottom: 20px;
   padding: 20px;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .other-resource-title {
@@ -222,20 +215,6 @@ body {
   margin-top: 20px;
 }
 
-.other-resource-card {
-  margin-bottom: 20px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.other-resource-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
 .card-link {
   text-decoration: none;
 }
@@ -252,7 +231,8 @@ body {
   align-items: center;
 }
 
-.resource-actions a.button {
+.resource-actions a.button,
+.resource-actions button.button {
   margin-bottom: 10px; 
   margin-right: 10px;
   display: inline-block;
@@ -266,10 +246,10 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.resource-actions a.button:hover {
-  background-color: #515151; 
-  border-color: #515151; 
-  color: #ffffff; 
+.resource-actions a.button:hover,
+.resource-actions button.button:hover {
+  background-color: #ffffff;
+  color: #000000;
 }
 
 .comment-card {
@@ -316,17 +296,95 @@ card-wrapper {
   position: relative;
 }
 
-.card-link {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  text-decoration: none; 
-}
-
 .w3-card-4 {
   position: relative;
   z-index: 2;
+}
+
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.options-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.admin-column {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-content {
+  padding: 10px;
+}
+
+.action-button {
+  background-color: #000000;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #444444;
+}
+
+/* Style for delete button */
+.delete-button {
+  background-color: #f44336;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
+.centered-nav {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; 
+  align-items: center;
+}
+
+.navbar-left {
+  grid-column: 1;
+}
+
+.navbar-middle {
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-right {
+  grid-column: 3;
+  justify-self: end;
 }
