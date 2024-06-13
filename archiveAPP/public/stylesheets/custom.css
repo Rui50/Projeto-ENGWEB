@@ -388,3 +388,51 @@ card-wrapper {
   grid-column: 3;
   justify-self: end;
 }
+
+/* CSS for user information */
+.user-page-info-container {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.user-page-info p {
+  margin: 5px 0;
+}
+
+/* CSS for user resources */
+.user-page-resources-container {
+  margin-top: 20px;
+}
+
+.user-page-resource-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* CSS for user ratings */
+.user-page-ratings-container {
+  margin-top: 20px;
+}
+
+.user-page-rating-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* CSS for user comments */
+.user-page-comments-container {
+  margin-top: 20px;
+}
+
+.user-page-comment-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,64 @@
+extends layout
+
+block content
+
+    .centered-nav.w3-bar.w3-theme-d5
+        .navbar-left
+
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            if userData.level === 'admin'
+                a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+            
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
+
+
+    // User Info
+    .user-page-info-container
+        h2 User Information
+        .user-page-info
+            p Username: #{userData.username}
+            p Email: #{userData.email}
+            p Level: #{userData.level}
+
+    // User Resources
+    .user-page-resources-container
+        h2 User Resources
+        if userData.resources && userData.resources.length > 0
+            each resource in userData.resources
+                .resource-card
+                    h3 #{resource.title}
+                    p Subtitle: #{resource.subtitle || 'N/A'}
+                    p Type: #{resource.type}
+                    p Date: #{resource.creationDate}
+                    p Tags: #{resource.tags.join(', ')}
+        else
+            p No resources found.
+
+    // User Ratings
+    .user-page-ratings-container
+        h2 User Ratings
+        if userData.ratings && userData.ratings.length > 0
+            each rating in userData.ratings
+                .rating-card
+                    p Resource: #{rating.resource}
+                    p Stars: #{rating.stars}
+                    p Date: #{rating.date}
+        else
+            p No ratings found.
+
+    // User Comments
+    .user-page-comments-container
+        h2 User Comments
+        if userData.comments && userData.comments.length > 0
+            each comment in userData.comments
+                .comment-card
+                    p Resource: #{comment.resource}
+                    p Content: #{comment.content}
+                    p Date: #{comment.date}
+        else
+            p No comments found.

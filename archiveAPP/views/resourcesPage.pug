@@ -2,14 +2,9 @@ extends layout
 
 block content
     
-    //if u.level === "admin" || u.level === "producer"
-    //    a(href="/resources/add")
-    //        img.w3-margin(src="/images/add.png" alt="add icon" width="30" height="30")
     .centered-nav.w3-bar.w3-theme-d5
-        // Left Section
         .navbar-left
 
-        // Middle Section
         .navbar-middle
             a.w3-bar-item.w3-button(href="/resources") Recursos
             a.w3-bar-item.w3-button(href="/profile") Profile
@@ -18,7 +13,6 @@ block content
             if currentUser.level === 'admin'
                 a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
             
-        // Right Section
         .navbar-right
             a.w3-bar-item.w3-button(href="/logout") Logout
 

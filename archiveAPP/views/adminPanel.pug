@@ -5,18 +5,14 @@ block content
         .admin-header
             h1 Admin Panel
 
-            // Options
             .options-container
-                a.action-button(href="#") Add Resource
-                a.action-button(href="#") Check Latest Comments
+                a.action-button(href="/resources/add") Add Resource
 
-        // Layout with columns
         .admin-columns
-            // Users Column
             .admin-column
                 h2 Users
                 each user in userList
-                    a.card-link(href=`/users/${user._id}`)
+                    a.card-link(href=`/users/${user.username}`)
                         .card
                             .card-content
                                 p Username: #{user.username}
