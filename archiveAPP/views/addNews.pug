@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    .centered-nav.w3-bar.w3-theme-d5
+        .navbar-left
+
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+            
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
+
+    .add-news-container
+        .add-news-form
+            h1 Add News
+
+            form(action="/news/add" method="POST")
+                .form-group
+                    label(for="title") Title:
+                    input(type="text" id="title" name="title" class="form-control" required)
+                
+                .form-group
+                    label(for="content") Content:
+                    textarea(id="content" name="content" class="form-control" rows="5" required)
+
+                .form-group
+                    label(for="idResource") ID Resource (optional):
+                    input(type="text" id="idResource" name="idResource")
+
+                button.btn.btn-primary(type="submit") Add News

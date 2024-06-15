@@ -3,9 +3,18 @@ extends layout
 block content
     .modal(id="display")
     .centered-nav.w3-bar.w3-theme-d5
-        a.w3-bar-item.w3-button(href="/resources") Recursos
-        a.w3-bar-item.w3-button(href="/profile") Profile
-        a.w3-bar-item.w3-button(href="/news") News
+        .navbar-left
+
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            if user.level === 'admin'
+                a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+            
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
 
     .resource-container
         .left-section
@@ -44,7 +53,7 @@ block content
 
                 if user.level === "admin"
                     .resource-actions
-                        a.button(href=`/resources/edit/${resource._id}`) Edit
+                        a.button(href=`/resources/edit-resource/${resource._id}`) Edit
                         form(action=`/resources/delete/${resource._id}`, method="POST", style="display:inline;")
                             button(type="submit", class="button") Delete
 

@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    .modal(id="display")
+    .centered-nav.w3-bar.w3-theme-d5
+        .navbar-left
+
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            // so para admins por isso nao é preciso veriricar se é admin
+            a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
+    
+    .w3-container.w3-padding-64.w3-theme-l5
+        h1.w3-center Users
+
+        .w3-content.w3-margin-top(style="max-width:1200px; margin:auto;")
+            table.w3-table.w3-bordered.w3-centered
+                thead
+                    tr
+                        th Username
+                        th Email
+                        th Level
+                        th Last Acess
+                        th Options
+                tbody
+                    each user in users
+                        tr
+                            td= user.username
+                            td= user.email
+                            td= user.level
+                            td= user.lastAccess
+                            td
+                                a.w3-button.w3-theme-d1(href=`/users/${user.id}`) View User
+                                a.w3-button.w3-theme-d1(href=`/users/edit/${user.id}`) Edit User
+                                form(action=`/users/delete/${user.id}` method="POST" style="display:inline")
+                                    button.w3-button.w3-theme-d1(type="submit") Delete User

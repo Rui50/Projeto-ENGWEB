@@ -21,6 +21,20 @@ function verifyToken(req, res, next){
     }
   }
 
+  router.get('/', verifyToken, function(req, res, next) {
+    if(req.user.level === 'admin'){
+      axios.get('http://localhost:5002/users?token=' + req.cookies.token)
+        .then(dados => {
+          res.render('users', {users: dados.data});
+        })
+        .catch(erro => {
+          res.render('error', {error: erro});
+        });
+    } else {
+      res.status(403).send('Access denied');
+    }
+  });  
+
 /* GET users listing. */
 router.get('/:id', verifyToken, function(req, res, next) {
 

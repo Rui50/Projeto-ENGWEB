@@ -11,6 +11,7 @@ var resourceSchema = new mongoose.Schema({
     creationDate: Date,
     registrationDate: Date,
     author : String,
+    submitter : String,
     visibility : String,
     tags : [String],
     path : String,
@@ -19,6 +20,8 @@ var resourceSchema = new mongoose.Schema({
         content : String,
         user : String,
         postDate : Date,
+        id : String,
+        commentID : String,
     }],
     rankings: [{
         user : String,

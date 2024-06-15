@@ -358,7 +358,6 @@ card-wrapper {
   background-color: #444444;
 }
 
-/* Style for delete button */
 .delete-button {
   background-color: #f44336;
 }
@@ -389,7 +388,6 @@ card-wrapper {
   justify-self: end;
 }
 
-/* CSS for user information */
 .user-page-info-container {
   margin-top: 20px;
   border: 1px solid #ccc;
@@ -401,7 +399,6 @@ card-wrapper {
   margin: 5px 0;
 }
 
-/* CSS for user resources */
 .user-page-resources-container {
   margin-top: 20px;
 }
@@ -413,7 +410,6 @@ card-wrapper {
   margin-bottom: 10px;
 }
 
-/* CSS for user ratings */
 .user-page-ratings-container {
   margin-top: 20px;
 }
@@ -425,7 +421,6 @@ card-wrapper {
   margin-bottom: 10px;
 }
 
-/* CSS for user comments */
 .user-page-comments-container {
   margin-top: 20px;
 }
@@ -435,4 +430,117 @@ card-wrapper {
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-columns {
+  display: flex;
+  gap: 20px;
+}
+
+.admin-column {
+  width: 33%;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.admin-column h2 {
+  margin-bottom: 10px;
+}
+
+.scrollable-content {
+  max-height: 700px;
+  overflow-y: auto; 
+  padding: 10px;
+}
+
+.card {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.button.centered-button {
+  display: block;
+  margin-top: 10px;
+  padding: 10px;
+  text-align: center;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+}
+
+.button.centered-button:hover {
+  background-color: #0056b3;
+}
+
+.comment-card .comment-text {
+  text-decoration: none;
+}
+
+.add-news-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.add-news-form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-news-form h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Ensures padding is included in the width */
+  resize: vertical; /* Allows the textarea to be vertically resizable */
+}
+
+.form-group textarea {
+  height: 120px; /* Set a specific height for the textarea */
+}
+
+.form-group button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.form-group button:hover {
+  background-color: #45a049;
 }

@@ -65,15 +65,65 @@ router.get('/add', verifyToken, function(req, res, next) {
   res.render('uploadResource', {/*u: req.user,*/data: data});
 });
 
-router.get('/rankings', verifyToken,  function(req, res, next) {
-    axios.get('http://localhost:5001/resources/rankings')
-        .then(dados => {
-            res.render('rankings', {rankingList: dados.data});
+router.get('/rankings', verifyToken, function(req, res, next) {
+    axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
+        .then(userResponse => {
+            const userData = userResponse.data;
+            console.log('User data fetched successfully:', userData);
+
+            // Now fetch rankings data
+            axios.get('http://localhost:5001/resources/rankings')
+                .then(rankingsResponse => {
+                    const rankingList = rankingsResponse.data;
+                    console.log('Rankings fetched successfully:', rankingList);
+
+                    res.render('rankings', {
+                        rankingList: rankingList,
+                        user: userData 
+                    });
+                })
+                .catch(rankingsError => {
+                    console.error('Error fetching rankings:', rankingsError.response ? rankingsError.response.data : rankingsError.message);
+                    res.render('error', { error: rankingsError });
+                });
         })
-        .catch(erro => {
-            res.render('error', {error: erro})
-        })
+        .catch(userError => {
+            console.error('Error fetching user data:', userError.response ? userError.response.data : userError.message);
+            res.render('error', { error: userError });
+        });
 });
+
+router.get('/comments', verifyToken, function(req, res, next) {
+    if (req.user.level === 'admin') {
+            axios.get('http://localhost:5001/resources')
+                .then(resourcesResponse => {
+                    const resources = resourcesResponse.data;
+
+                    let allComments = [];
+                    resources.forEach(resource => {
+                        if (resource.comments && Array.isArray(resource.comments)) {
+                            allComments.push(...resource.comments.map(comment => ({
+                                content: comment.content,
+                                user: comment.user,
+                                postDate: comment.postDate,
+                                resourceId: resource._id,
+                                commentId: comment.commentID
+                            })));
+                        }
+                    });
+
+                    allComments.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+
+                    res.render('allComments', { allComments: allComments});
+                })
+                .catch(error => {
+                    res.render('error', { error: error });
+                });
+        } else {
+            res.render('error', { error: 'You do not have permission to access this page' });
+        }
+    });
+
 
 router.get('/comments/:id', verifyToken, function(req, res, next) {
     axios.get(`http://localhost:5001/resources/${req.params.id}`)
@@ -87,19 +137,25 @@ router.get('/comments/:id', verifyToken, function(req, res, next) {
 });
 
 
-router.get('/edit-resource/:id', verifyToken,  function(req, res, next) {
+router.get('/edit-resource/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
     var resource;
-    
+
     axios.get(`http://localhost:5001/resources/${id}`)
         .then(resourceResponse => {
             resource = resourceResponse.data;
-            res.render('editresource', {resource: resource});
+
+            if (req.user.username === resource.submitter || req.user.level === 'admin') {
+                res.render('editresource', { resource: resource });
+            } else {
+                res.render('error', { error: 'You do not have permission to edit this resource.' });
+            }
         })
         .catch(error => {
-            res.render('error', {error: error});
+            res.render('error', { error: error });
         });
 });
+
 
 router.post('/add', verifyToken, upload.single('file'), function (req, res, next) {
     console.log('Received form data:', req.body);
@@ -236,7 +292,7 @@ router.post('/upload', verifyToken, upload.single('resource'), function (req, re
                     creationDate: metadataObject.creationDate,
                     registrationDate: new Date(),
                     author: metadataObject.author,
-                    //submitter : req.user.username,
+                    submitter : req.user.username,
                     visibility: metadataObject.visibility,
                     tags: metadataObject.tags || [],
                     comments: [],
@@ -297,14 +353,15 @@ router.post('/upload', verifyToken, upload.single('resource'), function (req, re
     }
 });
 
-
-
 router.post('/comment/:id', verifyToken, function(req, res, next) {
-    console.log('Received comment data:', req.body)
+    console.log('Received comment data:', req.body);
     var id = req.params.id;
     var comment = {
         content: req.body.content,
-        user: req.body.user,
+        user: req.user.username,
+        postDate: new Date(),
+        commentID: uuidv4(),
+        id: req.params.id
     };
 
     axios.post(`http://localhost:5001/resources/comments/${id}`, comment)
@@ -317,11 +374,31 @@ router.post('/comment/:id', verifyToken, function(req, res, next) {
         });
 });
 
+// Express route for deleting a comment
+router.post('/comment/delete/:id', verifyToken, function(req, res, next) {
+    const resourceId = req.params.id;       // Resource ID from URL
+    const commentId = req.body.commentId;   // Comment ID from form body
+    console.log('Deleting comment:', commentId, 'from resource:', resourceId)
+
+    // Axios request to delete comment
+    axios.delete(`http://localhost:5001/resources/comments/${resourceId}/${commentId}`)
+        .then(response => {
+            console.log('Comment deleted successfully:', response.data);
+            res.redirect(`/resources/${resourceId}`);
+        })
+        .catch(error => {
+            console.error('Error deleting comment:', error);
+            res.render('error', { error: error });
+        });
+});
+
+
+
 router.post('/rate/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
     var ranking = {
         stars: req.body.stars,
-        user: req.body.user
+        user: req.user.username
     };
 
     axios.post(`http://localhost:5001/resources/ratings/${id}`, ranking)
@@ -357,29 +434,31 @@ router.post('/edit/:id', verifyToken, function(req, res, next) {
 });
 
 router.post('/search', verifyToken, function(req, res, next) {
-    console.log('Search request received:', req.body); 
-    if(req.body.search == ""){
-        axios.get('http://localhost:5001/resources')
-            .then(dados => {
-                console.log('Received data from API:', dados.data);
-                res.render('resourcesPage', {resourceList: dados.data});
-            })
-            .catch(erro => {
-                console.error('Error fetching data from API:', erro);
-                res.render('error', {error: erro})
-            })
-    } else {
-        axios.post('http://localhost:5001/resources/search', req.body)
-            .then(dados => {
-                console.log('Received data from API:', dados.data);
-                res.render('resourcesPage', {resourceList: dados.data});
-            })
-            .catch(erro => {
-                console.error('Error fetching data from API:', erro);
-                res.render('error', {error: erro})
-            })
-    }
+    console.log('Search request received:', req.body);
+
+    // Fetch current user's data
+    axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
+        .then(userResponse => {
+            const userData = userResponse.data;
+            console.log('User data fetched successfully:', userData);
+
+            // Forward the search request to the API
+            axios.post('http://localhost:5001/resources/search', req.body)
+                .then(dados => {
+                    console.log('Search results fetched successfully:', dados.data);
+                    res.render('resourcesPage', { resourceList: dados.data, currentUser: userData });
+                })
+                .catch(error => {
+                    console.error('Error searching resources:', error.response ? error.response.data : error.message);
+                    res.render('error', { error: error });
+                });
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error.response ? error.response.data : error.message);
+            res.render('error', { error: error });
+        });
 });
+
 
 router.get('/download/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
@@ -445,16 +524,16 @@ router.post('/delete/:id', verifyToken, function(req, res, next) {
         });
 });
 
+
 router.get('/:id', verifyToken, function(req, res, next) {
     var date = new Date().toISOString().substring(0, 19);
     var id = req.params.id;
     var resource;
     var user;
 
-    axios.get('http://localhost:5002/users/' + req.user.username+ "?token=" + req.cookies.token)
+    axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
         .then(userResponse => {
-            userData = userResponse.data; 
-            console.log(userData)
+            userData = userResponse.data;
             return axios.get(`http://localhost:5001/resources/${id}`);
         })
         .then(resourceResponse => {
@@ -471,6 +550,8 @@ router.get('/:id', verifyToken, function(req, res, next) {
         })
         .then(authorResourcesResponse => {
             var authorResources = authorResourcesResponse.data;
+
+            authorResources = authorResources.filter(r => r._id !== id);
 
             authorResources.forEach(resource => {
                 const rankings = resource.rankings || [];
@@ -490,6 +571,7 @@ router.get('/:id', verifyToken, function(req, res, next) {
             res.render('error', { error: error });
         });
 });
+
 
 
 module.exports = router;

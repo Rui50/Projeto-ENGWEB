@@ -1,6 +1,4 @@
-extends layout
-
 block content
-  h1= message
-  h2= error.status
+  h1= message || 'Error'
+  h2= error.status || '500'
   pre #{error.stack}

@@ -48,8 +48,23 @@ module.exports.SearchByType = type => {
     return Resource
         .find({ type: { $regex: searchRegex } })
         .exec();
-
 }
+
+module.exports.SearchByYear = year => {
+    const searchYear = parseInt(year);
+
+    return Resource
+        .find({ year: searchYear })
+        .exec();
+};
+
+module.exports.SearchByTags = tags => {
+    const searchRegex = new RegExp(tags, 'i');
+    return Resource
+        .find({ tags: { $regex: searchRegex } })
+        .exec();
+};
+
 
 module.exports.insert = res => {
     var newResource = new Resource(res)
@@ -104,3 +119,10 @@ module.exports.getRankings = id => {
         .findOne({ _id: id }, { rankings: 1 })
         .exec()
 }
+
+module.exports.deleteComment = (id, commentId) => {
+    return Resource.updateOne(
+        { _id: id },
+        { $pull: { comments: { commentID: commentId } } }
+    ).exec();
+};

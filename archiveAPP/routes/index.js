@@ -66,15 +66,32 @@ router.post('/login', function(req, res, next) {
 router.get('/adminpanel', verifyToken, function(req, res, next) {
   axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
       .then(userResponse => {
-          const user = userResponse.data;
-          if (user.level === 'admin') {
-              axios.get('http://localhost:5002/users' + "?token=" + req.cookies.token )
+          const currentUser = userResponse.data;
+
+          if (currentUser.level === 'admin') {
+              axios.get('http://localhost:5002/users' + "?token=" + req.cookies.token)
                   .then(usersResponse => {
                       const users = usersResponse.data;
+
                       axios.get('http://localhost:5001/resources')
                           .then(resourcesResponse => {
                               const resources = resourcesResponse.data;
-                              res.render('adminpanel', { userList: users, resourceList: resources });
+
+                              let allComments = [];
+                              resources.forEach(resource => {
+                                  if (resource.comments && Array.isArray(resource.comments)) {
+                                      allComments.push(...resource.comments.map(comment => ({
+                                          content: comment.content,
+                                          user: comment.user,
+                                          postDate: comment.postDate,
+                                          resourceId: resource._id
+                                      })));
+                                  }
+                              });
+
+                              allComments.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+
+                              res.render('adminpanel', { userList: users, resourceList: resources, allComments: allComments, currentUser: currentUser });
                           })
                           .catch(error => {
                               res.render('error', { error: error });
@@ -92,9 +109,38 @@ router.get('/adminpanel', verifyToken, function(req, res, next) {
       });
 });
 
+
 router.get('/logout', function(req, res, next) {
   res.clearCookie('token')
   res.redirect('/')
+});
+
+router.get('/news/add', verifyToken, function(req, res, next) {
+  if (req.user.level == 'admin') {
+    res.render('addNews'); 
+  }
+});
+
+router.post('/news/add', function(req, res, next) {
+  const { title, content, user, date, idResource } = req.body;
+
+  const newsData = {
+    title: req.body.title,
+    content: req.body.content,
+    user: req.user.username,
+    date: new Date(), 
+    idResource: req.body.idResource || null,
+};
+
+  axios.post('http://localhost:5001/news', newsData)
+      .then(response => {
+          console.log('News added successfully:', response.data);
+          res.redirect('/news');
+      })
+      .catch(error => {
+          console.error('Error adding news:', error);
+          res.render('error', { error: error });
+      });
 });
 
 // GET /news - Pagina de noticias
@@ -115,7 +161,7 @@ router.get('/profile', verifyToken, function(req, res, next) {
 
   Promise.all([
     axios.get('http://localhost:5002/users/' + req.user.username+ "?token=" + req.cookies.token),
-    axios.get('http://localhost:5001/resources?author=' + req.user.username)
+    axios.get('http://localhost:5001/resources?submitter=' + req.user.username)
   ])
   .then(([userData, resourcesData]) => {
     console.log(userData.data);  

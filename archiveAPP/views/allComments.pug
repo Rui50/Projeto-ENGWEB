@@ -1,0 +1,39 @@
+extends layout
+
+block content
+    .modal(id="display")
+    .centered-nav.w3-bar.w3-theme-d5
+        .navbar-left
+
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
+    
+    .w3-container.w3-padding-64.w3-theme-l5
+        h1.w3-center Comments
+
+        .w3-content.w3-margin-top(style="max-width:1200px; margin:auto;")
+            table.w3-table.w3-bordered.w3-centered
+                thead
+                    tr
+                        th User
+                        th Content
+                        th Post Date
+                        th Options
+                tbody
+                    each comment in allComments
+                        tr
+                            td= comment.user
+                            td= comment.content
+                            td= new Date(comment.postDate).toLocaleString()
+                            td
+                                a.w3-button.w3-theme-d1(href=`/resources/${comment.resourceId}`) View Resource
+                                form(action=`/resources/comment/delete/${comment.resourceId}` method="POST" style="display:inline")
+                                    input(type="hidden" name="commentId" value=comment.commentId)
+                                    button.w3-button.w3-theme-d1(type="submit") Delete Comment

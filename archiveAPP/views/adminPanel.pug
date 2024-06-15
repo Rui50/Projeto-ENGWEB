@@ -1,45 +1,67 @@
 extends layout
 
 block content
+    .centered-nav.w3-bar.w3-theme-d5
+        .navbar-left
+
+        .navbar-middle
+            a.w3-bar-item.w3-button(href="/resources") Recursos
+            a.w3-bar-item.w3-button(href="/profile") Profile
+            a.w3-bar-item.w3-button(href="/news") News
+            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+            if currentUser.level === 'admin'
+                a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+            
+        .navbar-right
+            a.w3-bar-item.w3-button(href="/logout") Logout
+
+
     .admin-container
         .admin-header
             h1 Admin Panel
 
             .options-container
                 a.action-button(href="/resources/add") Add Resource
+                a.action-button(href="/news/add") Add News
 
         .admin-columns
+            // Users Column
             .admin-column
                 h2 Users
-                each user in userList
-                    a.card-link(href=`/users/${user.username}`)
+                .scrollable-content
+                    each user in userList
                         .card
                             .card-content
                                 p Username: #{user.username}
                                 p Email: #{user.email}
-                                // Add more user details as needed
+                if userList.length > 0
+                    a.button.centered-button(href="/users") See All Users
 
             // Resources Column
             .admin-column
                 h2 Resources
-                each resource in resourceList
-                    a.card-link(href=`/resources/${resource._id}`)
+                .scrollable-content
+                    each resource in resourceList
                         .card
                             .card-content
                                 p Title: #{resource.title}
                                 p Type: #{resource.type}
                                 // Add more resource details as needed
+                if resourceList.length > 0
+                    a.button.centered-button(href="/resources") See All Resources
 
             // Comments Column
             .admin-column
-                h2 Latest Comments
-                if latestComments && latestComments.length > 0
-                    each comment in latestComments
-                        .card
-                            .card-content
-                                p Comment: #{comment.content}
-                                p By: #{comment.user}
-                                // Add more comment details as needed
-                            a.action-button.delete-button(href="#" onclick="deleteComment('#{comment._id}')") Delete
+                h2 Comments
+                .scrollable-content
+                    if allComments && allComments.length > 0
+                        each comment in allComments
+                            .card
+                                .card-content
+                                    p.comment-text(style="text-decoration: none;") #{comment.content}
+                                    p.comment-meta By: #{comment.user} on #{comment.postDate}
+                if resourceList.length > 0
+                    a.button.centered-button(href="/resources/comments") See All Comments
                 else
                     p No comments available
+                        

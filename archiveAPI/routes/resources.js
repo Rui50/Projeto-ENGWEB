@@ -40,6 +40,22 @@ router.get('/comments/:id', function(req, res, next) {
         .catch(erro => res.status(500).jsonp(erro))
 });
 
+router.delete('/comments/:id/:commentID', function(req, res, next) {
+    console.log('Received DELETE request for comment deletion');
+    console.log('Resource ID:', req.params.id);
+    console.log('Comment ID:', req.params.commentID);
+
+    Resources.deleteComment(req.params.id, req.params.commentID)
+        .then(dados => {
+            console.log('Comment deleted successfully:', dados);
+            res.jsonp(dados);
+        })
+        .catch(erro => {
+            console.error('Error deleting comment:', erro);
+            res.status(500).jsonp(erro);
+        });
+});
+
 router.get('/ratings/:id', function(req, res, next) {
     Resources.getRankings(req.params.id)
         .then(dados => res.jsonp(dados))
@@ -87,19 +103,32 @@ router.get('/rankings', function(req, res, next) {
 
 router.post('/search', function(req, res, next) {
     console.log('Search request received:', req.body);
-    if(req.body.filter == 'title'){
-        Resources.getByTitle(req.body.search)
-            .then(dados => res.jsonp(dados))
-            .catch(erro => res.status(500).jsonp(erro))
-    } else if(req.body.filter == 'author'){
-        Resources.SearchByAuthor(req.body.search)
-            .then(dados => res.jsonp(dados))
-            .catch(erro => res.status(500).jsonp(erro))
-    } else if(req.body.filter == 'type'){
-        Resources.SearchByType(req.body.search)
-            .then(dados => res.jsonp(dados))
-            .catch(erro => res.status(500).jsonp(erro))
+
+    let searchPromise;
+
+    switch (req.body.filter) {
+        case 'title':
+            searchPromise = Resources.getByTitle(req.body.search);
+            break;
+        case 'author':
+            searchPromise = Resources.SearchByAuthor(req.body.search);
+            break;
+        case 'type':
+            searchPromise = Resources.SearchByType(req.body.search);
+            break;
+        case 'year':
+            searchPromise = Resources.SearchByYear(req.body.search);
+            break;
+        case 'tag':
+            searchPromise = Resources.SearchByTags(req.body.search);
+            break;
+        default:
+            return res.status(400).json({ error: 'Invalid search filter' });
     }
+
+    searchPromise
+        .then(dados => res.json(dados))
+        .catch(error => res.status(500).json({ error: error.message }));
 });
 
 
@@ -289,8 +318,9 @@ router.post('/comments/:id', function(req, res, next) {
     var id = req.params.id;
     var comment = {
         content: req.body.content,
-        user: req.user.username,
-        postDate: new Date()
+        user: req.body.user,
+        postDate: req.body.postDate,
+        commentID: req.body.commentID 
     };
 
     console.log('Comment to be inserted:', comment);
@@ -312,7 +342,7 @@ router.post('/ratings/:id', function(req, res, next) {
     Resources.findById(req.params.id)
         .then(resp => {
             var ranking = {
-                user: req.user.user,
+                user: req.body.username,
                 stars: req.body.stars
             }   
             
