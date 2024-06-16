@@ -42,7 +42,7 @@ body {
   font-size: 18px; 
   font-weight: bold;
   margin: 0 10px;
-}
+}*/
 
 .search-container {
   display: flex;
@@ -365,13 +365,13 @@ card-wrapper {
 .delete-button:hover {
   background-color: #d32f2f;
 }
-
+/*
 .centered-nav {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr; 
   align-items: center;
 }
-
+*/
 .navbar-left {
   grid-column: 1;
 }
@@ -473,13 +473,13 @@ card-wrapper {
   margin-top: 10px;
   padding: 10px;
   text-align: center;
-  background-color: #007bff;
+  background-color: #000000;
   color: white;
   text-decoration: none;
 }
 
 .button.centered-button:hover {
-  background-color: #0056b3;
+  background-color: #494949;
 }
 
 .comment-card .comment-text {
@@ -523,12 +523,12 @@ card-wrapper {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  box-sizing: border-box; /* Ensures padding is included in the width */
-  resize: vertical; /* Allows the textarea to be vertically resizable */
+  box-sizing: border-box; 
+  resize: vertical; 
 }
 
 .form-group textarea {
-  height: 120px; /* Set a specific height for the textarea */
+  height: 120px;
 }
 
 .form-group button {
@@ -543,4 +543,76 @@ card-wrapper {
 
 .form-group button:hover {
   background-color: #45a049;
+}
+
+.container-user {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.centered-nav {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; 
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+}
+
+.centered-nav .w3-bar-item {
+  color: #fff;
+  padding: 10px;
+}
+
+.centered-nav .w3-bar-item:hover {
+  background-color: #575757;
+}
+
+.card-user {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-body-user {
+  padding: 20px;
+}
+
+.card-container-user {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card-container-user .card-user {
+  flex: 1 1 calc(33.333% - 20px);
+  box-sizing: border-box;
+}
+
+.user-info-section-user .card-user {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.centered-title-user {
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.delete-button {
+    display: inline-block;
+    background-color: black;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.delete-button:hover {
+    background-color: #333;
 }

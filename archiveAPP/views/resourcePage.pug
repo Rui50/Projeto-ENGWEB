@@ -24,7 +24,7 @@ block content
                     each rating in resource.rankings.slice(0, 5)
                         .rating-card
                             p.rating-value #{rating.stars} ⭐
-                            p.rating-meta by #{rating.user} on #{rating.date}
+                            p.rating-meta by #{rating.user}
 
         .middle-section
             h2.text-center Resource Info
@@ -43,7 +43,7 @@ block content
                         | #{resource.submitter}
                     p 
                         b Date: 
-                        | #{resource.creationDate}
+                        | #{new Date(resource.creationDate).toLocaleString()}
                     p 
                         b Tags: 
                         | #{resource.tags.join(', ')}
@@ -73,7 +73,7 @@ block content
                             p Type: #{otherResource.type}
                             //p Author: #{otherResource.author}
                             //p Submitter: #{otherResource.submitter}
-                            p Date: #{otherResource.creationDate}
+                            p Date: #{new Date(otherResource.creationDate).toLocaleString()}
                             p Tags: #{otherResource.tags.join(', ')}
                             p Rating: #{otherResource.averageRating} ⭐
 
@@ -84,5 +84,5 @@ block content
                         each comment in resource.comments.slice(0, 5)
                             .comment-card
                                 p.comment-text #{comment.content}
-                                p.comment-meta by #{comment.user} on #{comment.postDate}
+                                p.comment-meta by #{comment.user} on #{new Date(comment.postDate).toLocaleString()}
                     a.button.centered-button(href=`/resources/comments/${resource._id}`) See All Comments

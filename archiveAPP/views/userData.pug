@@ -12,53 +12,80 @@ block content
             a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
             if userData.level === 'admin'
                 a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
-            
+
         .navbar-right
             a.w3-bar-item.w3-button(href="/logout") Logout
 
+    .container-user
+        .user-info-section-user
+            h2.centered-title-user User Information
+            .card-user
+                .card-body-user
+                    p 
+                        b Username: 
+                        | #{userData.username}
+                    p 
+                        b Email: 
+                        | #{userData.email}
+                    p 
+                        b Level: 
+                        | #{userData.level}
+                    p 
+                        b Registration Date: 
+                        | #{userData.registrationDate}
+                    p 
+                        b Last Access: 
+                        | #{userData.lastAccess}
 
-    // User Info
-    .user-page-info-container
-        h2 User Information
-        .user-page-info
-            p Username: #{userData.username}
-            p Email: #{userData.email}
-            p Level: #{userData.level}
+        .user-metrics-section-user
+            h2.centered-title-user User Metrics
+            .card-user
+                .card-body-user
+                    p Ratings Given: #{ratingsGiven}
+                    p Comments Made: #{commentsMade}
+                    p Resources Added: #{resourcesAdded}
 
-    // User Resources
-    .user-page-resources-container
-        h2 User Resources
-        if userData.resources && userData.resources.length > 0
-            each resource in userData.resources
-                .resource-card
-                    h3 #{resource.title}
-                    p Subtitle: #{resource.subtitle || 'N/A'}
-                    p Type: #{resource.type}
-                    p Date: #{resource.creationDate}
-                    p Tags: #{resource.tags.join(', ')}
-        else
-            p No resources found.
+        .user-resources-section-user
+            h2.centered-title-user User Resources
+            if resources && resources.length > 0
+                .card-container-user
+                    each resource in resources
+                        .card-user
+                            a.card-link(href=`/resource/${resource._id}`)
+                                .card-body-user
+                                    h3.resource-title #{resource.title}
+                                    p.subtitle #{resource.subtitle || 'N/A'}
+                                    p Type: #{resource.type}
+                                    p Date: #{resource.creationDate}
+                                    p Tags: #{resource.tags.join(', ')}
+                                    p Visibility: #{resource.visibility}
+            else
+                p No resources found.
 
-    // User Ratings
-    .user-page-ratings-container
-        h2 User Ratings
-        if userData.ratings && userData.ratings.length > 0
-            each rating in userData.ratings
-                .rating-card
-                    p Resource: #{rating.resource}
-                    p Stars: #{rating.stars}
-                    p Date: #{rating.date}
-        else
-            p No ratings found.
+        .user-ratings-section-user
+            h2.centered-title-user User Ratings
+            if ratings && ratings.length > 0
+                .card-container-user
+                    each rating in ratings
+                        .card-user
+                            .card-body-user
+                                p Resource: #{rating.resource}
+                                p Stars: #{rating.stars}
+            else
+                p No ratings found.
 
-    // User Comments
-    .user-page-comments-container
-        h2 User Comments
-        if userData.comments && userData.comments.length > 0
-            each comment in userData.comments
-                .comment-card
-                    p Resource: #{comment.resource}
-                    p Content: #{comment.content}
-                    p Date: #{comment.date}
-        else
-            p No comments found.
+        .user-comments-section-user
+            h2.centered-title-user User Comments
+            if comments && comments.length > 0
+                .card-container-user
+                    each comment in comments
+                        .card-user
+                            .card-body-user
+                                p Resource: #{comment.resource}
+                                p Content: #{comment.content}
+                                p Date: #{comment.date}
+                                form(action=`/resources/comment/delete/${comment.resource}`, method="POST", style="display:inline")
+                                    input(type="hidden", name="commentId", value=comment.commentId)
+                                    button.delete-button(type="submit") Delete Comment
+            else
+                p No comments found.

@@ -2,19 +2,18 @@ extends layout
 
 block content
   .centered-nav.w3-bar.w3-theme-d5
-    .centered-nav.w3-bar.w3-theme-d5
-        .navbar-left
+    .navbar-left
 
-        .navbar-middle
-            a.w3-bar-item.w3-button(href="/resources") Recursos
-            a.w3-bar-item.w3-button(href="/profile") Profile
-            a.w3-bar-item.w3-button(href="/news") News
-            a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
-            if user.level === 'admin'
-                a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
-            
-        .navbar-right
-            a.w3-bar-item.w3-button(href="/logout") Logouts
+    .navbar-middle
+        a.w3-bar-item.w3-button(href="/resources") Recursos
+        a.w3-bar-item.w3-button(href="/profile") Profile
+        a.w3-bar-item.w3-button(href="/news") News
+        a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+        if user.level === 'admin'
+            a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+        
+    .navbar-right
+        a.w3-bar-item.w3-button(href="/logout") Logout
 
   .w3-container.w3-padding-64.w3-theme-l5.text-center
     h1.welcome-message Archive Profile
@@ -35,7 +34,7 @@ block content
           | #{user.email}
         p 
           strong Last Access: 
-          | #{user.lastAccess}
+          | #{new Date(user.lastAccess).toLocaleString()}
         p 
           strong Role: 
           | #{user.level}
@@ -55,7 +54,12 @@ block content
             .w3-container.w3-theme
               h3 #{resource.title}
             .w3-container
-              p #{resource.description}
+              p 
+                b Type: 
+                | #{resource.type}
+              p 
+                b Creation Date: 
+                | #{new Date(resource.creationDate).toLocaleString()}
             .w3-container.w3-padding
               a.w3-button.w3-theme-d1(href=`/resources/${resource._id}`) View
               a.w3-button.w3-theme-d1(href=`/resources/edit-resource/${resource._id}`) Edit

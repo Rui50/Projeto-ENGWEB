@@ -7,6 +7,7 @@ const resource = require('../models/resource');
 const fs = require('fs');
 const StreamZip = require('node-stream-zip');
 const multer = require('multer');
+const { type } = require('os');
 const upload = multer({ dest: 'archive/' });
 
 /**
@@ -150,8 +151,9 @@ router.post('/', function(req, res, next) {
             var newNews = {
                 title: resource.title,
                 content: 'New resource posted: ' + resource.title + ' by ' + resource.author,
-                user: resource.author,
+                user: resource.submitter,
                 date: resource.registrationDate,
+                type: 'resource',
                 idResource: resource._id
             };
             return News.insert(newNews)
@@ -167,154 +169,10 @@ router.post('/', function(req, res, next) {
         });
 });
 
-router.post('/upload', upload.single('resource'), function(req, res, next) {
-    var date = new Date().toISOString().substring(0, 16);
-    var errors = [];
-    var resource = {
-        content: [],
-        allFiles: [],
-        manifest: {
-            exists: true,
-            valid: true
-        },
-        metadata: {
-            exists: true,
-            valid: true
-        }
-    };
 
-    if (req.file != undefined && (req.file.mimetype == 'application/zip' || req.file.mimetype == "application/x-zip-compressed")) {
-        var zip = new StreamZip({
-            file: req.file.path,
-            storeEntries: true
-        });
-
-        zip.on("error", (err) => {
-            res.render("error", { error: err });
-        });
-
-        zip.on('ready', () => {
-            for (const entry of Object.values(zip.entries())) {
-                resource.allFiles.push(entry.name);
-                if (entry.name != "manifest.txt" && entry.name != "metadata.json") {
-                    resource.content.push(entry.name);
-                }
-            }
-
-            if (resource.content.length == 0) {
-                errors.push("The resource does not contain content.");
-            }
-
-            if (resource.allFiles.includes("manifest.txt")) {
-                let manifest = zip.entryDataSync("manifest.txt").toString('utf8').replace('\n', '');
-                let files = manifest.split('|');
-                for (let file of resource.content) {
-                    if (!files.includes(file)) {
-                        resource.manifest.valid = false;
-                    }
-                }
-
-                if (!resource.manifest.valid) {
-                    errors.push("The resource does not contain a valid manifest file.");
-                }
-            } else {
-                resource.manifest.exists = false;
-                errors.push("The resource does not contain a manifest file.");
-            }
-
-            let metadata;
-            if (resource.allFiles.includes("metadata.json")) {
-                let jsonFile = zip.entryDataSync("metadata.json").toString('utf8');
-                metadata = JSON.parse(jsonFile);
-                req.body.metadata = metadata;
-
-                if (!(metadata.hasOwnProperty('title') && metadata.hasOwnProperty('type') && metadata.hasOwnProperty('dateCreation') && metadata.hasOwnProperty('visibility') && metadata.hasOwnProperty('author'))) {
-                    resource.metadata.valid = false;
-                }
-
-                if (["Article", "Sheet", "Report", "Test", "Slides", "Thesis"].indexOf(metadata.type) === -1) {
-                    resource.metadata.valid = false;
-                }
-
-                if (["Public", "Private"].indexOf(metadata.visibility) === -1) {
-                    resource.metadata.valid = false;
-                }
-
-                if (!resource.metadata.valid) {
-                    errors.push("The resource contains an invalid metadata file.");
-                }
-            } else {
-                resource.metadata.exists = false;
-                errors.push("The resource does not contain a metadata file.");
-            }
-
-            if (errors.length != 0) {
-                let path = __dirname + '/../' + req.file.path;
-                try {
-                    fs.unlinkSync(path); // Remove invalid resource
-                } catch (e) {
-                    console.log(e);
-                }
-                res.render('addResourceForm', { errors: errors, date: date });
-            } else {
-                let data = zip.entryDataSync("metadata.json").toString('utf8');
-                let metadataObj = JSON.parse(data);
-
-                var newResource = {
-                    resourceName: req.file.originalname,
-                    files: resource.content,
-                    title: metadataObj.title,
-                    subtitle: metadataObj.subtitle,
-                    type: metadataObj.type,
-                    dateCreation: metadataObj.dateCreation,
-                    dateSubmission: new Date().toISOString().slice(0, 19).split('T').join(' '),
-                    visibility: metadataObj.visibility,
-                    author: metadataObj.author,
-                    submitter: req.user.username,
-                    evaluation: {
-                        ev: 0,
-                        eved_by: []
-                    }
-                };
-
-                let oldPath = __dirname + '/../' + req.file.path;
-                let newPath = __dirname + '/../uploads/' + metadataObj.type + '/' + req.file.originalname;
-
-                fs.rename(oldPath, newPath, erro => {
-                    if (erro) res.render('error', { error: erro });
-                    else {
-                        axios.post('http://localhost:5001/resources', newResource)
-                            .then(response => {
-                                var newNews = {
-                                    title: newResource.title,
-                                    content: 'New resource posted: ' + newResource.title + ' by ' + newResource.author,
-                                    user: newResource.author,
-                                    date: newResource.dateSubmission,
-                                };
-
-                                axios.post('http://localhost:5001/news', newNews)
-                                    .then(response => {
-                                        res.redirect('/resources');
-                                    })
-                                    .catch(e => res.render('error', { error: e }));
-                            })
-                            .catch(error => res.render('error', { error: error }));
-                    }
-                });
-            }
-        });
-    } else {
-        errors.push("The resource is not a zip file!");
-        res.render('addResourceForm', { errors: errors });
-    }
-});
 
 // POST /resources/:id/comments - Insere um comentário num recurso
 router.post('/comments/:id', function(req, res, next) {
-    console.log('Received request to post comment');
-    console.log('Request parameters:', req.params);
-    console.log('Request body:', req.body);
-
     var id = req.params.id;
     var comment = {
         content: req.body.content,
@@ -323,15 +181,24 @@ router.post('/comments/:id', function(req, res, next) {
         commentID: req.body.commentID 
     };
 
-    console.log('Comment to be inserted:', comment);
-
     Resources.insertComment(id, comment)
         .then(dados => {
-            console.log('Comment inserted successfully:', dados);
-            res.jsonp(dados);
+            var newNews = {
+                title: 'New Comment Added',
+                content: `User ${comment.user} added a comment to resource ${id}.`,
+                user: comment.user,
+                date: new Date(),
+                type: 'comment',
+                idResource: id
+            };
+
+            return News.insert(newNews);
+        })
+        .then(news => {
+            res.jsonp(news); 
         })
         .catch(erro => {
-            console.error('Error inserting comment:', erro);
+            console.error('Error inserting comment or news:', erro);
             res.status(500).jsonp(erro);
         });
 });
@@ -339,36 +206,63 @@ router.post('/comments/:id', function(req, res, next) {
 
 // POST /resources/:id/rankings - Insere um ranking num recurso
 router.post('/ratings/:id', function(req, res, next) {
-    Resources.findById(req.params.id)
-        .then(resp => {
-            var ranking = {
-                user: req.body.username,
-                stars: req.body.stars
-            }   
-            
-            // se o user ja tiver feito "ranking", damos update, senao inserimos
-            var newRank = true;
+    var id = req.params.id;
+    var ranking = {
+        user: req.body.user,
+        stars: req.body.stars
+    };
 
-            // damos update? ou so pode fazer um ranking por user?
-            for(var i = 0; i < resp.rankings.length; i++) {
-                if(resp.rankings[i].user == ranking.user) {
-                    newRank = false;
+    console.log(ranking.user)
+
+    Resources.findById(id)
+        .then(resource => {
+            var newRanking = true;
+
+            for (var i = 0; i < resource.rankings.length; i++) {
+                if (resource.rankings[i].user === ranking.user) {
+                    newRanking = false;
+                    break;
                 }
             }
 
-            if(newRank) { // insere ranking
-                Resources.insertRanking(req.params.id, ranking)
-                    .then(dados => res.jsonp(dados))
-                    .catch(erro => res.status(500).jsonp(erro))
-            } else { // atualiza ranking
-                Resources.updateRanking(req.params.id, ranking)
-                    .then(dados => res.jsonp(dados))
-                    .catch(erro => res.status(500).jsonp(erro))
+            if (newRanking) {
+                return Resources.insertRanking(id, ranking)
+                    .then(dados => {
+                        var newNews = {
+                            title: 'New Ranking Added',
+                            content: `User ${req.body.username} added a ranking to resource ${id}.`,
+                            user: req.body.username,
+                            date: new Date(),
+                            type: 'rating',
+                            idResource: id
+                        };
+
+                        return News.insert(newNews); 
+                    });
+            } else {
+                return Resources.updateRanking(id, ranking)
+                    .then(dados => {
+                        var newNews = {
+                            title: 'Ranking Updated',
+                            content: `User ${req.body.username}'s ranking for resource ${id} has been updated.`,
+                            user: req.body.username,
+                            date: new Date(),
+                            type: 'Ranking',
+                            idResource: id
+                        };
+
+                        return News.insert(newNews); 
+                    });
             }
         })
-        .catch(erro => res.status(500).jsonp(erro))
+        .then(news => {
+            res.jsonp(news);
+        })
+        .catch(erro => {
+            console.error('Error inserting ranking or news:', erro);
+            res.status(500).jsonp(erro);
+        });
 });
-
 /**
  * @api {put}
  */

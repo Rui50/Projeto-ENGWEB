@@ -51,7 +51,7 @@ block content
                             | #{r.submitter}
                         p 
                             b Date: 
-                            | #{r.creationDate}
+                            | #{new Date(r.creationDate).toLocaleString()}
                         p 
                             b Tags: 
                             | #{r.tags.join(', ')}

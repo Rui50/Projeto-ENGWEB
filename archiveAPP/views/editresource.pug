@@ -1,10 +1,19 @@
 extends layout
 
 block content
-  .w3-bar.w3-center.w3-theme-d5
-    a.w3-bar-item.w3-button(href="/resources") Recursos
-    a.w3-bar-item.w3-button(href="/profile") Profile
-    a.w3-bar-item.w3-button(href="/news") News
+  .centered-nav.w3-bar.w3-theme-d5
+    .navbar-left
+
+    .navbar-middle
+        a.w3-bar-item.w3-button(href="/resources") Recursos
+        a.w3-bar-item.w3-button(href="/profile") Profile
+        a.w3-bar-item.w3-button(href="/news") News
+        a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+        if userLevel === 'admin'
+           a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+        
+    .navbar-right
+        a.w3-bar-item.w3-button(href="/logout") Logout
 
   .w3-container.w3-padding-64.w3-theme-l5.text-center
     h1.welcome-message Edit Resource
@@ -35,4 +44,4 @@ block content
             .w3-container.w3-padding
                 button.w3-button.w3-block.w3-theme-d1(type="submit") Save Changes
 
-    a.w3-button.w3-block.w3-theme-d2.w3-margin-top(href="/resources/#{resource._id}") Cancel
+    a.w3-button.w3-block.w3-theme-d2.w3-margin-top(href=`/resources/${resource._id}`) Cancel

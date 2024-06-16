@@ -59,7 +59,7 @@ block content
                             .card
                                 .card-content
                                     p.comment-text(style="text-decoration: none;") #{comment.content}
-                                    p.comment-meta By: #{comment.user} on #{comment.postDate}
+                                    p.comment-meta By: #{comment.user} on #{new Date(comment.postDate).toLocaleString()}
                 if resourceList.length > 0
                     a.button.centered-button(href="/resources/comments") See All Comments
                 else

@@ -2,27 +2,44 @@ extends layout
 
 block content
   .centered-nav.w3-bar.w3-theme-d5
-    a.w3-bar-item.w3-button(href="/resources") Recursos
-    a.w3-bar-item.w3-button(href="/profile") Profile
-    a.w3-bar-item.w3-button(href="/news") News
+    .navbar-left
+
+    .navbar-middle
+      a.w3-bar-item.w3-button(href="/resources") Recursos
+      a.w3-bar-item.w3-button(href="/profile") Profile
+      a.w3-bar-item.w3-button(href="/news") News
+      a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+      if userLevel === 'admin'
+        a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+      
+    .navbar-right
+      a.w3-bar-item.w3-button(href="/logout") Logout
 
   .w3-container.w3-padding-64.w3-theme-l5
     h2.w3-center Archive News
 
-    .w3-row.w3-margin-bottom
-      .w3-col.s12
-        input.w3-input.w3-border(type="text" placeholder="Search...")
+    form(action="/news" method="get")
+      .w3-row.w3-margin-bottom
+        .w3-col.s12
+          label(for="newsType") Filter by Type:
+          select.w3-select#newsType(name="newsType" onchange="this.form.submit()")
+            option(value="all", selected=(newsType === 'all')) All Types
+            option(value="resource", selected=(newsType === 'resource')) Resource Posted
+            option(value="admin", selected=(newsType === 'admin')) Admin News
+            option(value="comment", selected=(newsType === 'comment')) Comment Added
+            option(value="rating", selected=(newsType === 'rating')) Rating Added
 
     each news in newsList
-      .card-wrapper
-        .w3-card-4.w3-white.w3-margin-bottom
-          a.card-link(href=`/resources/${news.idResource}`)
-          .w3-container.w3-theme
-            h3 #{news.title}
-          .w3-container
-            p(style="margin-bottom: 10px;") #{news.content}
-            p
-              small Uploaded by: #{news.author}
-            p
-              small Date: #{news.date}
+      if !newsType || newsType === 'all' || newsType === news.type
+        a.card-link(href=`/resources/${news.idResource}`)
+          .card-wrapper
+            .w3-card-4.w3-white.w3-margin-bottom
+              .w3-container.w3-theme
+                h3 #{news.title}
+              .w3-container
+                p(style="margin-bottom: 10px;") #{news.content}
+                p
+                  small By: #{news.user}
+                p
+                  small Date: #{new Date(news.date).toLocaleString()}
         br.w3-margin-bottom

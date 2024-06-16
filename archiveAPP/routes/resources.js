@@ -12,40 +12,51 @@ const path = require('path');
 var jwt = require('jsonwebtoken');
 var env = require('../config/env')
 
-function verifyToken(req, res, next){
-    if(req.cookies && req.cookies.token){
-      jwt.verify(req.cookies.token, 'ew2024', function(err, payload){
-        if(err){
-          res.status(401).jsonp({error: 'Token inválido!'});
-        }
-        else{
-          req.user = payload;
-          next();
-        }
-      });
+function verifyToken(req, res, next) {
+    if (req.cookies && req.cookies.token) {
+        jwt.verify(req.cookies.token, 'ew2024', function (err, payload) {
+            if (err) {
+                res.status(401).render('error', { 
+                    error: { 
+                        message: 'Invalid token!', 
+                        redirect: 'login', 
+                        stack: err.stack 
+                    } 
+                });
+            } else {
+                req.user = payload;
+                next();
+            }
+        });
+    } else {
+        res.status(401).render('error', { 
+            error: { 
+                message: 'Token not found!', 
+                redirect: 'login' 
+            } 
+        });
     }
-    else{
-      res.status(401).jsonp({error: 'Token inexistente!'});
-    }
-  }
+}
 
-  router.get('/', verifyToken, function(req, res, next) {
+router.get('/', verifyToken, function(req, res, next) {
     const date = new Date().toISOString().substring(0, 19);
-    
+
     axios.get('http://localhost:5001/resources')
         .then(dados => {
-            const resources = dados.data.map(resource => {
-                const rankings = resource.rankings || [];
-                const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
-                const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
-                console.log('Average rating:', averageRating)
-                return {
-                    ...resource,
-                    averageRating: averageRating
-                };
+            
+            const resources = dados.data
+                .filter(resource => resource.visibility === 'public')
+                .map(resource => {
+                    const rankings = resource.rankings || [];
+                    const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
+                    const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
+                    console.log('Average rating:', averageRating)
+                    return {
+                        ...resource,
+                        averageRating: averageRating
+                    };
             });
 
-            // Fetch current user's data
             axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
                 .then(userResponse => {
                     const userData = userResponse.data;
@@ -62,7 +73,7 @@ function verifyToken(req, res, next){
 
 router.get('/add', verifyToken, function(req, res, next) {
   var data = new Date().toISOString().substring(0,19)
-  res.render('uploadResource', {/*u: req.user,*/data: data});
+  res.render('uploadResource', {data: data, userLevel: req.user.level});
 });
 
 router.get('/rankings', verifyToken, function(req, res, next) {
@@ -71,7 +82,6 @@ router.get('/rankings', verifyToken, function(req, res, next) {
             const userData = userResponse.data;
             console.log('User data fetched successfully:', userData);
 
-            // Now fetch rankings data
             axios.get('http://localhost:5001/resources/rankings')
                 .then(rankingsResponse => {
                     const rankingList = rankingsResponse.data;
@@ -95,35 +105,37 @@ router.get('/rankings', verifyToken, function(req, res, next) {
 
 router.get('/comments', verifyToken, function(req, res, next) {
     if (req.user.level === 'admin') {
-            axios.get('http://localhost:5001/resources')
-                .then(resourcesResponse => {
-                    const resources = resourcesResponse.data;
+        axios.get('http://localhost:5001/resources')
+            .then(resourcesResponse => {
+                const resources = resourcesResponse.data;
 
-                    let allComments = [];
-                    resources.forEach(resource => {
-                        if (resource.comments && Array.isArray(resource.comments)) {
-                            allComments.push(...resource.comments.map(comment => ({
-                                content: comment.content,
-                                user: comment.user,
-                                postDate: comment.postDate,
-                                resourceId: resource._id,
-                                commentId: comment.commentID
-                            })));
-                        }
-                    });
-
-                    allComments.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
-
-                    res.render('allComments', { allComments: allComments});
-                })
-                .catch(error => {
-                    res.render('error', { error: error });
+                let allComments = [];
+                resources.forEach(resource => {
+                    if (resource.comments && Array.isArray(resource.comments)) {
+                        allComments.push(...resource.comments.map(comment => ({
+                            content: comment.content,
+                            user: comment.user,
+                            postDate: comment.postDate,
+                            resourceId: resource._id,
+                            commentId: comment.commentID
+                        })));
+                    }
                 });
-        } else {
-            res.render('error', { error: 'You do not have permission to access this page' });
-        }
-    });
 
+                allComments.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+
+                res.render('allComments', { 
+                    allComments: allComments,
+                    userLevel: req.user.level
+                });
+            })
+            .catch(error => {
+                res.render('error', { error: error });
+            });
+    } else {
+        res.render('error', { error: 'You do not have permission to access this page' });
+    }
+});
 
 router.get('/comments/:id', verifyToken, function(req, res, next) {
     axios.get(`http://localhost:5001/resources/${req.params.id}`)
@@ -139,20 +151,21 @@ router.get('/comments/:id', verifyToken, function(req, res, next) {
 
 router.get('/edit-resource/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
-    var resource;
+
+    console.log(req.user.level);
 
     axios.get(`http://localhost:5001/resources/${id}`)
         .then(resourceResponse => {
-            resource = resourceResponse.data;
+            var resource = resourceResponse.data;
 
             if (req.user.username === resource.submitter || req.user.level === 'admin') {
-                res.render('editresource', { resource: resource });
+                res.render('editresource', { resource: resource, userLevel: req.user.level });
             } else {
                 res.render('error', { error: 'You do not have permission to edit this resource.' });
             }
         })
         .catch(error => {
-            res.render('error', { error: error });
+            res.render('error', { error: error.message });
         });
 });
 
@@ -349,7 +362,7 @@ router.post('/upload', verifyToken, upload.single('resource'), function (req, re
         } catch (e) {
             console.error('Error cleaning up file:', e);
         }
-        res.render('uploadResource', { errors });
+        res.render('uploadResource', { errors, userLevel: req.user.level });
     }
 });
 
@@ -374,13 +387,12 @@ router.post('/comment/:id', verifyToken, function(req, res, next) {
         });
 });
 
-// Express route for deleting a comment
+
 router.post('/comment/delete/:id', verifyToken, function(req, res, next) {
-    const resourceId = req.params.id;       // Resource ID from URL
-    const commentId = req.body.commentId;   // Comment ID from form body
+    const resourceId = req.params.id;   
+    const commentId = req.body.commentId;
     console.log('Deleting comment:', commentId, 'from resource:', resourceId)
 
-    // Axios request to delete comment
     axios.delete(`http://localhost:5001/resources/comments/${resourceId}/${commentId}`)
         .then(response => {
             console.log('Comment deleted successfully:', response.data);
@@ -400,6 +412,8 @@ router.post('/rate/:id', verifyToken, function(req, res, next) {
         stars: req.body.stars,
         user: req.user.username
     };
+
+    console.log(ranking.user)
 
     axios.post(`http://localhost:5001/resources/ratings/${id}`, ranking)
         .then(response => {
@@ -436,13 +450,11 @@ router.post('/edit/:id', verifyToken, function(req, res, next) {
 router.post('/search', verifyToken, function(req, res, next) {
     console.log('Search request received:', req.body);
 
-    // Fetch current user's data
     axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
         .then(userResponse => {
             const userData = userResponse.data;
             console.log('User data fetched successfully:', userData);
 
-            // Forward the search request to the API
             axios.post('http://localhost:5001/resources/search', req.body)
                 .then(dados => {
                     console.log('Search results fetched successfully:', dados.data);
@@ -462,7 +474,6 @@ router.post('/search', verifyToken, function(req, res, next) {
 
 router.get('/download/:id', verifyToken, function(req, res, next) {
     var id = req.params.id;
-    // quando tiver users e perms a dar vou ter de verificar se o user tem permissões para fazer download
     axios.get(`http://localhost:5001/resources/${id}`)
         .then(response => {
             const resource = response.data;
@@ -533,7 +544,7 @@ router.get('/:id', verifyToken, function(req, res, next) {
 
     axios.get('http://localhost:5002/users/' + req.user.username + "?token=" + req.cookies.token)
         .then(userResponse => {
-            userData = userResponse.data;
+            user = userResponse.data;
             return axios.get(`http://localhost:5001/resources/${id}`);
         })
         .then(resourceResponse => {
@@ -541,17 +552,15 @@ router.get('/:id', verifyToken, function(req, res, next) {
 
             const rankings = resource.rankings || [];
             const totalStars = rankings.reduce((sum, ranking) => sum + ranking.stars, 0);
-            const averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
-
-            resource.averageRating = averageRating;
+            resource.averageRating = rankings.length > 0 ? (totalStars / rankings.length).toFixed(1) : 'No ratings';
 
             var author = resource.author;
-            return axios.get(`http://localhost:5001/resources?author=${author}`);
+            return axios.get(`http://localhost:5001/resources`);
         })
-        .then(authorResourcesResponse => {
-            var authorResources = authorResourcesResponse.data;
+        .then(resourcesResponse => {
+            var resources = resourcesResponse.data;
 
-            authorResources = authorResources.filter(r => r._id !== id);
+            var authorResources = resources.filter(r => r.author.includes(resource.author) && r._id !== id);
 
             authorResources.forEach(resource => {
                 const rankings = resource.rankings || [];
@@ -563,7 +572,7 @@ router.get('/:id', verifyToken, function(req, res, next) {
                 resource: resource, 
                 authorResources: authorResources, 
                 resourceList: authorResources, 
-                user: userData,
+                user: user,
                 d: date 
             });
         })

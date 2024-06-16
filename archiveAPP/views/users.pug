@@ -34,9 +34,9 @@ block content
                             td= user.username
                             td= user.email
                             td= user.level
-                            td= user.lastAccess
+                            td= new Date(user.lastAccess).toLocaleString()
                             td
-                                a.w3-button.w3-theme-d1(href=`/users/${user.id}`) View User
-                                a.w3-button.w3-theme-d1(href=`/users/edit/${user.id}`) Edit User
-                                form(action=`/users/delete/${user.id}` method="POST" style="display:inline")
+                                a.w3-button.w3-theme-d1(href=`/users/${user.username}`) View User
+                                a.w3-button.w3-theme-d1(href=`/users/edit/${user.username}`) Edit User
+                                form(action=`/users/delete/${user.username}` method="POST" style="display:inline")
                                     button.w3-button.w3-theme-d1(type="submit") Delete User
