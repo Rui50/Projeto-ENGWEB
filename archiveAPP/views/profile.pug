@@ -39,6 +39,10 @@ block content
           strong Role: 
           | #{user.level}
 
+        img.profile-picture(src=profilePicture, alt='Profile Picture', style='max-width: 200px; max-height: 200px; border-radius: 50%;')
+      
+      a.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/profile/edit") Edit Profile
+
     if user.level === "admin" || user.level === "producer"
 
       hr

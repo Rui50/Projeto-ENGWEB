@@ -64,9 +64,7 @@ router.post('/login', passport.authenticate('local'), function(req, res, next) {
       console.log('User found:', user);
 
       User.loginUser(req.body.username, date)
-        .then(() => {
-          console.log('User login updated:', req.body.username);
-          
+        .then(() => {          
           jwt.sign(
             { username: req.body.username, level: user.level },
             "ew2024",
@@ -93,7 +91,7 @@ router.post('/login', passport.authenticate('local'), function(req, res, next) {
 });
 
 
-module.exports = router;
+//module.exports = router;
 
 router.get('/checkuser/:id' ,function(req, res, next) {
   User.getUser(req.params.id)
@@ -104,6 +102,29 @@ router.get('/checkuser/:id' ,function(req, res, next) {
     res.jsonp(userData);
   })
   .catch(error => res.status(500).jsonp(error));
+});
+
+router.post('/check', function(req, res, next) {
+  const { username, email } = req.body;
+
+  User.checkUser(username, email)
+      .then(foundUser => {
+          if (foundUser) {
+              res.json({ exists: true });
+          } else {
+              res.json({ exists: false });
+          }
+      })
+      .catch(error => {
+          console.error('Error checking user:', error);
+          res.status(500).json({ error: 'Error checking user' });
+      });
+});
+
+router.put('/:id', auth.verificaAcesso ,function(req, res, next) {
+  User.updateUser(req.params.id, req.body)
+    .then(dados => res.jsonp(dados))
+    .catch(erro => res.status(500).jsonp(erro))
 });
 
 router.get('/:id', auth.verificaAcesso ,function(req, res, next) {

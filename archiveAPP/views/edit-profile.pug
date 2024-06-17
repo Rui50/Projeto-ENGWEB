@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  .centered-nav.w3-bar.w3-theme-d5
+    .navbar-left
+
+    .navbar-middle
+        a.w3-bar-item.w3-button(href="/resources") Recursos
+        a.w3-bar-item.w3-button(href="/profile") Profile
+        a.w3-bar-item.w3-button(href="/news") News
+        a.w3-bar-item.w3-button(href="/resources/rankings") Rankings
+        if user.level === 'admin'
+            a.w3-bar-item.w3-button(href="/adminpanel") Admin Panel
+        
+    .navbar-right
+        a.w3-bar-item.w3-button(href="/logout") Logout
+
+  .w3-container.w3-padding-64.w3-theme-l5.text-center
+    h1.welcome-message Edit Profile
+
+    .w3-card-4.custom-card
+      .w3-container.w3-theme
+        h2 
+          b Edit User Information
+      .w3-container
+        form(action="/profile/update", method="post", enctype="multipart/form-data")
+          .w3-section
+            label(for="name") Name
+            input.w3-input.w3-border(type="text", name="name", value=user.name, required)
+          .w3-section
+            label(for="email") Email
+            input.w3-input.w3-border(type="email", name="email", value=user.email, required)
+          .w3-section
+            label Upload Profile Picture
+            input.w3-input(type="file" name="profilePicture" accept="image/*")
+          .w3-section
+            button.w3-button.w3-block.w3-theme-d1(type="submit") Save Changes
+          .w3-section
+            a.w3-button.w3-block.w3-theme-d1(href="/profile") Cancel

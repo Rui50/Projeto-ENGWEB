@@ -7,7 +7,7 @@ block content
     .w3-card-4.custom-card
       .w3-container.w3-theme
         h2 Register
-      form.w3-container(action="/register", method="post")
+      form.w3-container(action="/register", method="post", enctype="multipart/form-data")
         .w3-section
           label(for="username") Username
           input.w3-input.w3-border(type="text", name="username", required)
@@ -23,12 +23,14 @@ block content
         .w3-section
           label(for="confirm_password") Confirm Password
           input.w3-input.w3-border(type="password", name="confirm_password", required)
-
         .w3-section
           label Choose User Level
-          select.w3-select(name="level")
+          select.w3-select(name="level", required)
             option(value="admin") Admin
             option(value="producer") Producer
             option(value="consumer") Consumer
+        .w3-section
+          label Upload Profile Picture
+          input.w3-input(type="file" name="profilePicture" accept="image/*")
         button.w3-button.w3-block.w3-theme-d1.w3-margin-top(type="submit") Register
         a.w3-button.w3-block.w3-theme-d1.w3-margin-top(href="/") Back

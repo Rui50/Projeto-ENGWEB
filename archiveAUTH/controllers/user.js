@@ -71,3 +71,14 @@ module.exports.deleteUser = id => {
             return erro
         })
 }
+
+module.exports.checkUser = (username, email) => {
+    return User.findOne({ $or: [{ username: username }, { email: email }] })
+        .then(foundUser => {
+            return foundUser;
+        })
+        .catch(error => {
+            console.error('Error checking user:', error);
+            throw error;
+        });
+};

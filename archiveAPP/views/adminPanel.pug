@@ -23,9 +23,15 @@ block content
             .options-container
                 a.action-button(href="/resources/add") Add Resource
                 a.action-button(href="/news/add") Add News
+            .options-container
+                form(action="/admin/export" method="POST")
+                    button.action-button(type="submit") Export Data
+
+                form(action="/admin/import" method="POST" enctype="multipart/form-data")
+                    input(type="file" name="file" required)
+                    button.action-button(type="submit") Import Data
 
         .admin-columns
-            // Users Column
             .admin-column
                 h2 Users
                 .scrollable-content
@@ -37,7 +43,6 @@ block content
                 if userList.length > 0
                     a.button.centered-button(href="/users") See All Users
 
-            // Resources Column
             .admin-column
                 h2 Resources
                 .scrollable-content
@@ -46,11 +51,9 @@ block content
                             .card-content
                                 p Title: #{resource.title}
                                 p Type: #{resource.type}
-                                // Add more resource details as needed
                 if resourceList.length > 0
                     a.button.centered-button(href="/resources") See All Resources
 
-            // Comments Column
             .admin-column
                 h2 Comments
                 .scrollable-content

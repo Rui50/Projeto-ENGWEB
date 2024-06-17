@@ -9,10 +9,6 @@ var News = require('../controllers/new')
  */
 
 
-/**
- * @api {get}
- */
-
 // GET /news - Devolve a lista de notícias
 router.get('/', function(req, res, next) {
     News.list()
@@ -26,10 +22,6 @@ router.get('/:id', function(req, res, next) {
         .then(dados => res.jsonp(dados))
         .catch(erro => res.status(500).jsonp(erro))
 });
-
-/**
- * @api {post}
- */
 
 // POST /news - Insere uma notícia
 router.post('/', function(req, res, next) {

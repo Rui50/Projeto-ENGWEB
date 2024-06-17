@@ -4,16 +4,6 @@ var Resources = require('../controllers/resource')
 var News = require('../controllers/new');
 const resource = require('../models/resource');
 
-const fs = require('fs');
-const StreamZip = require('node-stream-zip');
-const multer = require('multer');
-const { type } = require('os');
-const upload = multer({ dest: 'archive/' });
-
-/**
- * @api {get}
- */
-
 // GET /resources - Devolve a lista de recursos
 router.get('/', function(req, res, next) {
     Resources.list()
@@ -263,9 +253,6 @@ router.post('/ratings/:id', function(req, res, next) {
             res.status(500).jsonp(erro);
         });
 });
-/**
- * @api {put}
- */
 
 // PUT /resources/:id - Atualiza um recurso
 router.put('/:id', function(req, res, next) {
@@ -273,10 +260,6 @@ router.put('/:id', function(req, res, next) {
         .then(dados => res.jsonp(dados))
         .catch(erro => res.status(500).jsonp(erro))
 });
-
-/**
- * @api {delete}
- */
 
 // DELETE /resources/:id - Apaga um recurso
 router.delete('/:id', function(req, res, next) {
