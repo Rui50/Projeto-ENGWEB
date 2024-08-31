@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)https://epl.di.uminho.pt/~jcr/AULAS/RPCW2023/aulas/aula4/aula4.html -->
+<html><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/content/location/location.js" id="eppiocemhmnlbhjplcgkofciiegomcon"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/extend-native-history-api.js"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/requests.js"></script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>aula4.md</title>
+
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="./aula4.md_files/mermaid.min.js.transferir"></script><script bis_use="true" type="text/javascript" charset="utf-8" data-bis-config="[&quot;facebook.com/&quot;,&quot;twitter.com/&quot;,&quot;youtube-nocookie.com/embed/&quot;,&quot;//vk.com/&quot;,&quot;//www.vk.com/&quot;,&quot;linkedin.com/&quot;,&quot;//www.linkedin.com/&quot;,&quot;//instagram.com/&quot;,&quot;//www.instagram.com/&quot;,&quot;//www.google.com/recaptcha/api2/&quot;,&quot;//hangouts.google.com/webchat/&quot;,&quot;//www.google.com/calendar/&quot;,&quot;//www.google.com/maps/embed&quot;,&quot;spotify.com/&quot;,&quot;soundcloud.com/&quot;,&quot;//player.vimeo.com/&quot;,&quot;//disqus.com/&quot;,&quot;//tgwidget.com/&quot;,&quot;//js.driftt.com/&quot;,&quot;friends2follow.com&quot;,&quot;/widget&quot;,&quot;login&quot;,&quot;//video.bigmir.net/&quot;,&quot;blogger.com&quot;,&quot;//smartlock.google.com/&quot;,&quot;//keep.google.com/&quot;,&quot;/web.tolstoycomments.com/&quot;,&quot;moz-extension://&quot;,&quot;chrome-extension://&quot;,&quot;/auth/&quot;,&quot;//analytics.google.com/&quot;,&quot;adclarity.com&quot;,&quot;paddle.com/checkout&quot;,&quot;hcaptcha.com&quot;,&quot;recaptcha.net&quot;,&quot;2captcha.com&quot;,&quot;accounts.google.com&quot;,&quot;www.google.com/shopping/customerreviews&quot;,&quot;buy.tinypass.com&quot;,&quot;gstatic.com&quot;,&quot;secureir.ebaystatic.com&quot;,&quot;docs.google.com&quot;,&quot;contacts.google.com&quot;,&quot;github.com&quot;,&quot;mail.google.com&quot;,&quot;chat.google.com&quot;,&quot;audio.xpleer.com&quot;,&quot;keepa.com&quot;,&quot;static.xx.fbcdn.net&quot;,&quot;sas.selleramp.com&quot;,&quot;1plus1.video&quot;,&quot;console.googletagservices.com&quot;,&quot;//lnkd.demdex.net/&quot;,&quot;//radar.cedexis.com/&quot;,&quot;//li.protechts.net/&quot;,&quot;challenges.cloudflare.com/&quot;]" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executers/vi-tr.js"></script>
+</head>
+<body __processed_7e09edb4-f283-469f-a7f8-076ccbac88f7__="true" bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWllZ29tY29uIiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQiLCJMSU5LRURJTiI6ImRpc2FibGVkIiwiQ09ORklHIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjIuMC4xNSIsInNjb3JlIjoyMDAxNX1d">
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="gui%C3%A3o-para-a-quarta-semana-de-aulas-rpcw2023">Guião para a quarta semana de aulas (RPCW2023)</h1>
+<h2 id="gest%C3%A3o-de-alunos">Gestão de alunos</h2>
+<p>Tarefas a realizar na aula:</p>
+<ol>
+<li>
+<p>Apresentação sobre HTML Forms: Slides no drive</p>
+</li>
+<li>
+<p>Dataset da UC:</p>
+<ul>
+<li>
+<p>Apresentação</p>
+</li>
+<li>
+<p>Conversão de CSV para JSON</p>
+<ol>
+<li>
+<p>Ler o ficheiro CSV para um dicionário</p>
+<pre class="hljs"><code><div bis_skin_checked="1">import csv
+
+f = open('alunos.csv')
+csv_reader = csv.DictReader(f, delimiter=';')
+line_count = 0
+for linha in csv_reader:
+    if line_count == 0:
+        print(f'Column names are {", ".join(linha)}')
+        line_count += 1
+    print(f'\t{linha["nome"]} tem identificador {linha["id"]} e um repositorio git: {linha["gitlink"]}')
+    line_count += 1
+print(f'Foram processados {line_count} registos.')
+</div></code></pre>
+</li>
+<li>
+<p>Ler o ficheiro CSV para um dicionário e escrever o dicionário num ficheiro JSON</p>
+<pre class="hljs"><code><div bis_skin_checked="1">import csv
+import json
+
+f = open('alunos.csv')
+csv_reader = csv.DictReader(f, delimiter=';')
+line_count = 0
+mybd = []
+for linha in csv_reader:
+    if line_count == 0:
+        print(f'Column names are {", ".join(linha)}')
+        line_count += 1
+    mybd.append(linha)
+    line_count += 1
+f.close()
+
+f = open("alunos.json", "w")
+json.dump(mybd, f, ensure_ascii=False)
+f.close()
+print(f'Foram processados {line_count} registos.')
+</div></code></pre>
+</li>
+</ol>
+</li>
+<li>
+<p>Colocar a API REST a funcionar com o json-server</p>
+</li>
+<li>
+<p>Testar</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Criar uma App Web com as seguintes funcionalidades:</p>
+<ul>
+<li>Página principal com uma tabela de alunos com as colunas: <code>id</code>, <code>nome</code>, <code>gitlink</code> (o gitlink deve ser um link para o repositório GIT), e operações;</li>
+<li>As operações são: <code>Editar</code> e <code>Remover</code>;</li>
+<li>O id e o nome devem ser links para uma página individual do aluno com toda a informação deste; Para além, dos campos mencionados devem ser previstos 8 campos para registo dos TPC, 1 campo para registo do Projeto e 2 campos para registo dos exames de época normal e de recurso;</li>
+<li>A operação <code>Editar</code> deve ser um link para uma página com um formulário exibindo a informação do aluno onde deverá ser possível alterar qualquer campo de informação; Os campos ainda não presentes no dataset deverão aparecer preenchidos com o valor por omissão: <code>NA</code>;</li>
+<li>A operação <code>Remover</code> deverá recuperar o registo, mostrá-lo, e pedir ao utilizador que confirme a sua remoção;</li>
+<li>Na página principal deverá ser acrescentado um botão para <code>Adicionar</code> um novo aluno;</li>
+<li>... estatísticas...</li>
+</ul>
+</li>
+<li>
+<p>Criar uma pasta <code>public</code> para os recursos estáticos:</p>
+<ul>
+<li>Explicar os recursos estáticos;</li>
+<li>Explicar o servidor de recursos estáticos.</li>
+</ul>
+</li>
+<li>
+<p>Criar as templates das páginas em falta;</p>
+</li>
+<li>
+<p>Tratamento do POST:</p>
+</li>
+</ol>
+<pre class="hljs"><code><div bis_skin_checked="1">case "POST":
+    if(req.url == '/alunos'){
+        recuperaInfo(req, resultado =&gt; {
+            resultado['id'] = resultado['Id']
+            console.log('POST de aluno:' + JSON.stringify(resultado))
+            axios.post('http://localhost:3000/alunos', resultado)
+                .then(resp =&gt; {
+                    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                    res.write(geraPostConfirm( resp.data, d))
+                    res.end()
+                })
+                .catch(erro =&gt; {
+                    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                    res.write('&lt;p&gt;Erro no POST: ' + erro + '&lt;/p&gt;')
+                    res.write('&lt;p&gt;&lt;a href="/"&gt;Voltar&lt;/a&gt;&lt;/p&gt;')
+                    res.end()
+                })
+        })
+    }
+</div></code></pre>
+<ol start="7">
+<li>
+<p>Recuperar a informação do body dum pedido:</p>
+<ul>
+<li><code>form_server_example.js</code>: apenas faz o handshake;</li>
+<li><code>form_server_example2.js</code>: consome a stream do request e imprime na consola( <code>req.on</code>: <code>data</code> e <code>end</code>);</li>
+<li><code>form_server_example3.js</code>: vai buscar a informação ao body e responde com a template preenchida;</li>
+<li><code>form_server_example4.js</code>: tudo arrumado numa função.</li>
+</ul>
+</li>
+</ol>
+<pre class="hljs"><code><div bis_skin_checked="1">var {parse} = require('querystring')
+
+// Aux function to process body
+
+function collectRequestBodyData(request, callback) {
+    if(request.headers['content-type'] === 'application/x-www-form-urlencoded') {
+        let body = '';
+        request.on('data', chunk =&gt; {
+            body += chunk.toString();
+        });
+        request.on('end', () =&gt; {
+            callback(parse(body));
+        });
+    }
+    else {
+        callback(null);
+    }
+}
+</div></code></pre>
+<ol start="8">
+<li>Utilização da função anterior:</li>
+</ol>
+<pre class="hljs"><code><div bis_skin_checked="1">case "POST": {
+                    // POST /persons -------------------------------------------------------------------
+                    collectRequestBodyData(req, result =&gt; {
+                        if(result){
+                            console.dir(result)
+                            res.writeHead(201, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write(formTemplates.personPostConfirmPage(result, d))
+                            res.end()
+                        }
+                        else{
+                            res.writeHead(201, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write("&lt;p&gt;Unable to collect data from body...&lt;/p&gt;")
+                            res.end()
+                        }
+                    });
+                    break
+}
+</div></code></pre>
+<ol start="9">
+<li>Formulário para o aluno:</li>
+</ol>
+<pre class="hljs"><code><div bis_skin_checked="1">// Template para o formulário de aluno ------------------
+function geraFormAluno( d ){
+    return `
+    &lt;html&gt;
+        &lt;head&gt;
+            &lt;title&gt;Registo de um aluno&lt;/title&gt;
+            &lt;meta charset="utf-8"/&gt;
+            &lt;link rel="icon" href="favicon.png"/&gt;
+            &lt;link rel="stylesheet" href="w3.css"/&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+        
+        &lt;/body&gt;
+            &lt;div class="w3-container w3-teal"&gt;
+                &lt;h2&gt;Registo de Aluno&lt;/h2&gt;
+            &lt;/div&gt;
+
+            &lt;form class="w3-container" action="/alunos" method="POST"&gt;
+                &lt;label class="w3-text-teal"&gt;&lt;b&gt;Nome&lt;/b&gt;&lt;/label&gt;
+                &lt;input class="w3-input w3-border w3-light-grey" type="text" name="Nome"&gt;
+          
+                &lt;label class="w3-text-teal"&gt;&lt;b&gt;Número / Identificador&lt;/b&gt;&lt;/label&gt;
+                &lt;input class="w3-input w3-border w3-light-grey" type="text" name="Id"&gt;
+
+                &lt;label class="w3-text-teal"&gt;&lt;b&gt;Link para o repositório no Git&lt;/b&gt;&lt;/label&gt;
+                &lt;input class="w3-input w3-border w3-light-grey" type="text" name="Git"&gt;
+          
+                &lt;input class="w3-btn w3-blue-grey" type="submit" value="Registar"/&gt;
+                &lt;input class="w3-btn w3-blue-grey" type="reset" value="Limpar valores"/&gt; 
+            &lt;/form&gt;
+
+            &lt;footer class="w3-container w3-teal"&gt;
+                &lt;address&gt;Gerado por galuno::RPCW2022 em ${d}&lt;/address&gt;
+            &lt;/footer&gt;
+        &lt;/body&gt;
+    &lt;/html&gt;
+    `
+}
+</div></code></pre>
+
+
+
+</body></html>

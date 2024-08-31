@@ -1,0 +1,23 @@
+Username: admin
+Password: admin
+Role: admin
+Resources: 4, 5, 6, 7, 8, 9
+
+Username: Rui50
+Password: Rui50
+Role: Produtor
+Resources: 11, 12, 13, 15, 1
+
+Username: Gui
+Password: Gui
+Role: Consumer
+
+Username: Silva
+Password: Silva
+Role: Produtor
+Resources: 16, 17, 18, 20
+
+Username: Torres
+Password: Torres
+Role: Produtor
+Resources: 3, 10, 19, 2

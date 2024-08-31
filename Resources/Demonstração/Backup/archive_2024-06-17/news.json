@@ -1,0 +1,230 @@
+[
+  {
+    "_id": "6670628d9c8045408cdf522e",
+    "title": "New Comment Added",
+    "content": "User Rui50 added a comment to resource 126e5c9d-6de6-4972-98a4-21c0fe5c4a20.",
+    "user": "Rui50",
+    "date": "2024-06-17T16:21:33.795Z",
+    "type": "comment",
+    "idResource": "126e5c9d-6de6-4972-98a4-21c0fe5c4a20",
+    "__v": 0
+  },
+  {
+    "_id": "667062759c8045408cdf5222",
+    "title": "New Ranking Added",
+    "content": "User undefined added a ranking to resource 126e5c9d-6de6-4972-98a4-21c0fe5c4a20.",
+    "date": "2024-06-17T16:21:09.770Z",
+    "type": "rating",
+    "idResource": "126e5c9d-6de6-4972-98a4-21c0fe5c4a20",
+    "__v": 0
+  },
+  {
+    "_id": "6670625d9c8045408cdf520c",
+    "title": "New Comment Added",
+    "content": "User Silva added a comment to resource 126e5c9d-6de6-4972-98a4-21c0fe5c4a20.",
+    "user": "Silva",
+    "date": "2024-06-17T16:20:45.460Z",
+    "type": "comment",
+    "idResource": "126e5c9d-6de6-4972-98a4-21c0fe5c4a20",
+    "__v": 0
+  },
+  {
+    "_id": "667062539c8045408cdf5204",
+    "title": "New Ranking Added",
+    "content": "User undefined added a ranking to resource 126e5c9d-6de6-4972-98a4-21c0fe5c4a20.",
+    "date": "2024-06-17T16:20:35.540Z",
+    "type": "rating",
+    "idResource": "126e5c9d-6de6-4972-98a4-21c0fe5c4a20",
+    "__v": 0
+  },
+  {
+    "_id": "667062349c8045408cdf51f2",
+    "title": "SSI - Projeto de Criptografia Aplicada",
+    "content": "New resource posted: SSI - Projeto de Criptografia Aplicada by vff",
+    "user": "Silva",
+    "date": "2024-06-17T16:20:04.423Z",
+    "type": "resource",
+    "idResource": "05540918-da92-48c8-92ce-5066b2b61ac4",
+    "__v": 0
+  },
+  {
+    "_id": "6670622f9c8045408cdf51ee",
+    "title": "Guião Aula 3 Engenharia Web",
+    "content": "New resource posted: Guião Aula 3 Engenharia Web by JCR",
+    "user": "Silva",
+    "date": "2024-06-17T16:19:59.468Z",
+    "type": "resource",
+    "idResource": "5a982910-8c39-40bd-ba5b-cc45d4db1234",
+    "__v": 0
+  },
+  {
+    "_id": "6670621f9c8045408cdf51ea",
+    "title": "Ficha prc2019-interfaces",
+    "content": "New resource posted: Ficha prc2019-interfaces by JCR",
+    "user": "Silva",
+    "date": "2024-06-17T16:19:43.093Z",
+    "type": "resource",
+    "idResource": "debadc0f-6aaa-405a-9a04-471f84aa03b0",
+    "__v": 0
+  },
+  {
+    "_id": "667062129c8045408cdf51e6",
+    "title": "Ficha prc2021-especial",
+    "content": "New resource posted: Ficha prc2021-especial by JCR",
+    "user": "Silva",
+    "date": "2024-06-17T16:19:30.325Z",
+    "type": "resource",
+    "idResource": "f175feba-efaf-43ce-a4e1-b7ee1aa20b57",
+    "__v": 0
+  },
+  {
+    "_id": "667061e69c8045408cdf51df",
+    "title": "Miniteste PI - Árvores Binárias",
+    "content": "New resource posted: Miniteste PI - Árvores Binárias by JBB",
+    "user": "admin",
+    "date": "2024-06-17T16:18:46.340Z",
+    "type": "resource",
+    "idResource": "8087ef3e-44e2-448b-a403-294ec181d45a",
+    "__v": 0
+  },
+  {
+    "_id": "667061db9c8045408cdf51da",
+    "title": "Miniteste PI - Modelação",
+    "content": "New resource posted: Miniteste PI - Modelação by JBB",
+    "user": "admin",
+    "date": "2024-06-17T16:18:35.453Z",
+    "type": "resource",
+    "idResource": "b94c22a3-0e71-4c8e-88ec-dc0926d3f3ce",
+    "__v": 0
+  },
+  {
+    "_id": "667061d29c8045408cdf51d6",
+    "title": "Miniteste PI - Listas Ligadas",
+    "content": "New resource posted: Miniteste PI - Listas Ligadas by JBB",
+    "user": "admin",
+    "date": "2024-06-17T16:18:26.197Z",
+    "type": "resource",
+    "idResource": "8d2e5035-57f8-4b85-89e0-524856a37d73",
+    "__v": 0
+  },
+  {
+    "_id": "667061c39c8045408cdf51d1",
+    "title": "Miniteste PI - Produto cartesiano",
+    "content": "New resource posted: Miniteste PI - Produto cartesiano by JBB",
+    "user": "admin",
+    "date": "2024-06-17T16:18:11.115Z",
+    "type": "resource",
+    "idResource": "14f2596d-7c49-4a11-9261-0d4f20025777",
+    "__v": 0
+  },
+  {
+    "_id": "667061ba9c8045408cdf51cd",
+    "title": "Miniteste PI - Sequências",
+    "content": "New resource posted: Miniteste PI - Sequências by JBB",
+    "user": "admin",
+    "date": "2024-06-17T16:18:02.619Z",
+    "type": "resource",
+    "idResource": "6d21fbed-2196-4ca9-9a78-5c8f35fdfc95",
+    "__v": 0
+  },
+  {
+    "_id": "667061b59c8045408cdf51c9",
+    "title": "Miniteste PI - Cálculo numérico",
+    "content": "New resource posted: Miniteste PI - Cálculo numérico by JBB",
+    "user": "admin",
+    "date": "2024-06-17T16:17:57.256Z",
+    "type": "resource",
+    "idResource": "fea6b355-dd3c-4998-8b0a-3271fbb6b6e0",
+    "__v": 0
+  },
+  {
+    "_id": "667061729c8045408cdf51c2",
+    "title": "Lexer",
+    "content": "New resource posted: Lexer by JRC",
+    "user": "Rui50",
+    "date": "2024-06-17T16:16:50.387Z",
+    "type": "resource",
+    "idResource": "4fb67554-f62f-42bb-8378-970884fb525c",
+    "__v": 0
+  },
+  {
+    "_id": "667061609c8045408cdf51be",
+    "title": "Relatorio ADI - grupo 35",
+    "content": "New resource posted: Relatorio ADI - grupo 35 by Rui",
+    "user": "Rui50",
+    "date": "2024-06-17T16:16:32.166Z",
+    "type": "resource",
+    "idResource": "fcba32e0-b7f1-4186-99f7-2efa9c4a8eba",
+    "__v": 0
+  },
+  {
+    "_id": "667061569c8045408cdf51ba",
+    "title": "Teste Computação Gráfica 2023/2024",
+    "content": "New resource posted: Teste Computação Gráfica 2023/2024 by Ramires",
+    "user": "Rui50",
+    "date": "2024-06-17T16:16:22.647Z",
+    "type": "resource",
+    "idResource": "10c84bdd-9900-4404-bd77-bda115802d07",
+    "__v": 0
+  },
+  {
+    "_id": "6670614f9c8045408cdf51b6",
+    "title": "Teste Sistemas Operativos 2023/2024",
+    "content": "New resource posted: Teste Sistemas Operativos 2023/2024 by Moura",
+    "user": "Rui50",
+    "date": "2024-06-17T16:16:15.824Z",
+    "type": "resource",
+    "idResource": "68713591-2a53-468d-b387-15f6a47f2444",
+    "__v": 0
+  },
+  {
+    "_id": "6670614a9c8045408cdf51b2",
+    "title": "Recurso Sistemas Operativos 2023/2024",
+    "content": "New resource posted: Recurso Sistemas Operativos 2023/2024 by Moura",
+    "user": "Rui50",
+    "date": "2024-06-17T16:16:10.448Z",
+    "type": "resource",
+    "idResource": "b3f72eaf-d5c4-4f02-a1d5-57392f4f58a4",
+    "__v": 0
+  },
+  {
+    "_id": "6670611e9c8045408cdf51ac",
+    "title": "Dataset mapa ruas de Braga",
+    "content": "New resource posted: Dataset mapa ruas de Braga by Manuel Silva",
+    "user": "Torres",
+    "date": "2024-06-17T16:15:26.050Z",
+    "type": "resource",
+    "idResource": "cb87bfe6-977c-44a6-904c-a2dbbc4f226d",
+    "__v": 0
+  },
+  {
+    "_id": "667061069c8045408cdf51a8",
+    "title": "Relatorio EngWeb",
+    "content": "New resource posted: Relatorio EngWeb by Eu claro",
+    "user": "Torres",
+    "date": "2024-06-17T16:15:02.824Z",
+    "type": "resource",
+    "idResource": "cc7c3887-4798-4a38-b2e7-ac826e42a45c",
+    "__v": 0
+  },
+  {
+    "_id": "667060ed9c8045408cdf51a4",
+    "title": "Guião/Recursos Aula 4 Engenharia Web",
+    "content": "New resource posted: Guião/Recursos Aula 4 Engenharia Web by JCR",
+    "user": "Torres",
+    "date": "2024-06-17T16:14:37.472Z",
+    "type": "resource",
+    "idResource": "79256053-4747-4ff7-9e95-76d8f280d1a3",
+    "__v": 0
+  },
+  {
+    "_id": "667060ca9c8045408cdf51a0",
+    "title": "Guião Aula nº6 Engenharia Web",
+    "content": "New resource posted: Guião Aula nº6 Engenharia Web by JCR",
+    "user": "Torres",
+    "date": "2024-06-17T16:14:02.872Z",
+    "type": "resource",
+    "idResource": "126e5c9d-6de6-4972-98a4-21c0fe5c4a20",
+    "__v": 0
+  }
+]

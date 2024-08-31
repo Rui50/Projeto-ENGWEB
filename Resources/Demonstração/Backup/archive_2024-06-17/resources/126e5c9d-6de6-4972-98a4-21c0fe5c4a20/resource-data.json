@@ -1,0 +1,45 @@
+{
+  "_id": "126e5c9d-6de6-4972-98a4-21c0fe5c4a20",
+  "type": "Guião",
+  "title": "Guião Aula nº6 Engenharia Web",
+  "year": 2024,
+  "creationDate": "2024-04-04T00:00:00.000Z",
+  "registrationDate": "2024-06-17T16:14:02.872Z",
+  "author": "JCR",
+  "submitter": "Torres",
+  "visibility": "public",
+  "tags": [
+    "Guião",
+    "engweb",
+    "aula6"
+  ],
+  "files": [],
+  "comments": [
+    {
+      "content": "Bom Recurso",
+      "user": "Silva",
+      "postDate": "2024-06-17T16:20:45.446Z",
+      "commentID": "cf2b3152-dd20-4eae-bc37-2543d3ceaceb",
+      "_id": "6670625d9c8045408cdf520a"
+    },
+    {
+      "content": "Falta a pergunta 6",
+      "user": "Rui50",
+      "postDate": "2024-06-17T16:21:33.782Z",
+      "commentID": "a5ec91ee-c890-47d0-a627-29d8f7be87cc",
+      "_id": "6670628d9c8045408cdf522c"
+    }
+  ],
+  "rankings": [
+    {
+      "user": "Silva",
+      "stars": 3,
+      "_id": "667062539c8045408cdf5202"
+    },
+    {
+      "user": "Rui50",
+      "stars": 5,
+      "_id": "667062759c8045408cdf5220"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "_id": "66705f7ae9c84161624fbad6",
+    "username": "Gui",
+    "name": "Gui",
+    "email": "Gui@gmail.com",
+    "level": "consumer",
+    "registrationDate": "2024-06-17T15:08:26.000Z",
+    "lastAccess": "2024-06-17T15:08:26.000Z",
+    "__v": 0
+  },
+  {
+    "_id": "66705ef1e9c84161624fbacb",
+    "username": "Rui50",
+    "name": "Rui50",
+    "email": "Rui50@gmail.com",
+    "level": "producer",
+    "registrationDate": "2024-06-17T15:06:09.000Z",
+    "lastAccess": "2024-06-17T15:21:03.000Z",
+    "__v": 0
+  },
+  {
+    "_id": "66706086e9c84161624fbae1",
+    "username": "Silva",
+    "name": "Silva",
+    "email": "Silva@gmail.com",
+    "level": "producer",
+    "registrationDate": "2024-06-17T15:12:54.000Z",
+    "lastAccess": "2024-06-17T15:18:58.000Z",
+    "__v": 0
+  },
+  {
+    "_id": "6670609ae9c84161624fbae8",
+    "username": "Torres",
+    "name": "Torres",
+    "email": "Torres@gmail.com",
+    "level": "producer",
+    "registrationDate": "2024-06-17T15:13:14.000Z",
+    "lastAccess": "2024-06-17T15:13:14.000Z",
+    "__v": 0
+  },
+  {
+    "_id": "66705e80e9c84161624fbac3",
+    "username": "admin",
+    "name": "admin",
+    "email": "archive@gmail.com",
+    "level": "admin",
+    "registrationDate": "2024-06-17T15:04:16.000Z",
+    "lastAccess": "2024-06-17T15:22:32.000Z",
+    "__v": 0
+  }
+]
